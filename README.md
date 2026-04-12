@@ -18,7 +18,7 @@ It is used to help an AI agent:
 
 This skill is meant for editor production workflows, not runtime logic generation.
 
-## Documentation
+Documentation:
 
-- [ue-widget-creator Guide (English)](docs/ue-widget-creator.en.md)
-- [ue-widget-creator Guide (中文)](docs/ue-widget-creator.cn.md)
+- [Guide (English)](docs/ue-widget-creator.en.md)
+- [Guide (中文)](docs/ue-widget-creator.cn.md)

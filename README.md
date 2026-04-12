@@ -18,6 +18,10 @@ It is used to help an AI agent:
 
 This skill is meant for editor production workflows, not runtime logic generation.
 
+Showcase:
+
+- [YouTube Video](https://www.youtube.com/watch?v=OsDRfoziQg8)
+
 Documentation:
 
 - [Guide (English)](docs/ue-widget-creator.en.md)

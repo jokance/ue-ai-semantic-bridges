@@ -1,0 +1,1686 @@
+# Support Surface
+
+This file is the frozen Widget DSL whitelist for this skill.
+For pure DSL syntax and block structure, see `spec.md`.
+
+Only emit a widget, static key, slot key, or animation track if it is listed here.
+
+## Scope Freeze
+
+Supported widget classes:
+
+- `CanvasPanel`
+- `Overlay`
+- `VerticalBox`
+- `HorizontalBox`
+- `StackBox`
+- `WrapBox`
+- `UniformGridPanel`
+- `GridPanel`
+- `WidgetSwitcher`
+- `SizeBox`
+- `ScaleBox`
+- `BackgroundBlur`
+- `InvalidationBox`
+- `RetainerBox`
+- `SafeZone`
+- `Border`
+- `Button`
+- `CheckBox`
+- `ComboBox`
+- `ComboBoxKey`
+- `ComboBoxString`
+- `DynamicEntryBox`
+- `MenuAnchor`
+- `WindowTitleBarArea`
+- `ExpandableArea`
+- `NamedSlot`
+- `InputKeySelector`
+- `TextBlock`
+- `RichTextBlock`
+- `Image`
+- `EditableText`
+- `EditableTextBox`
+- `MultiLineEditableText`
+- `MultiLineEditableTextBox`
+- `ListView`
+- `TileView`
+- `TreeView`
+- `ProgressBar`
+- `Slider`
+- `SpinBox`
+- `ScrollBar`
+- `ScrollBox`
+- `Spacer`
+- `Throbber`
+- `CircularThrobber`
+
+Out of scope:
+
+- widget classes not listed above
+- Event Graph logic
+- bindings and delegates
+- runtime-only list entry data
+- custom widget families outside the supported built-in catalog
+
+Notation:
+
+- `foo.{r,g,b,a}` means the 4 exact tracks `foo.r`, `foo.g`, `foo.b`, `foo.a`
+- `bar.{x,y}` means the 2 exact tracks `bar.x`, `bar.y`
+- `inherits ListView` means the exact same keys as `ListView`, plus the extra keys listed for that widget
+
+## Blueprint Metadata
+
+Supported top-level blueprint metadata:
+
+- `implements "UserObjectListEntry"`
+  Use this on DSL files for `ListView` / `TileView` / `TreeView` entry widgets so import adds the `UserObjectListEntry` interface and export preserves it.
+
+Unsupported blueprint metadata:
+
+- any other blueprint interface declaration
+- arbitrary `widget_blueprint` headers or legacy schema metadata
+
+## Static Widget Keys
+
+Common static keys on every supported widget:
+
+- `is_variable`
+- `visibility`
+- `is_enabled`
+- `tool_tip_text`
+- `clipping`
+- `flow_direction_preference`
+- `render_opacity`
+- `render_translation`
+- `render_scale`
+
+Structural child keys:
+
+- `parent_slot`
+  Use this on a child widget only when its parent is a supported named-slot widget.
+  Currently this is supported for `ExpandableArea` children with exact values `Header` or `Body`.
+- `render_shear`
+- `render_angle`
+- `render_pivot`
+
+Text-valued keys are normally authored as plain strings, with optional localization sidecars:
+
+- `text`, `hint_text`, `tool_tip_text`
+- `text.namespace`, `hint_text.namespace`, `tool_tip_text.namespace`
+- `text.key`, `hint_text.key`, `tool_tip_text.key`
+
+Recommended generation format:
+
+- generate plain `text` / `hint_text` / `tool_tip_text`
+- let export add `*.key` / `*.namespace` when preserving existing `FText` identity
+- do not generate `NSLOCTEXT(...)` by default
+
+Examples:
+
+```text
+Title TextBlock
+  text "Play"
+```
+
+```text
+Title TextBlock
+  text.key "Login.Title"
+  text.namespace "UI"
+  text "Play"
+```
+
+```text
+Title TextBlock
+  text "LOCTABLE(\"/Game/StringTables/UI\", \"Login.Title\")"
+```
+
+```text
+Title TextBlock
+  text "INVTEXT(\"Debug Label\")"
+```
+
+The parser also accepts compatibility text literals:
+
+- plain strings
+- `LOCTABLE("TableId", "Key")` string-table references
+- `INVTEXT("...")` culture-invariant literals
+- `NSLOCTEXT("Namespace", "Key", "Source")` localized text literals
+- canonical export keeps the main text field plain and preserves gathered localizable `FText` identity via `*.namespace` / `*.key`; special text forms such as `LOCTABLE(...)` / `INVTEXT(...)` stay inline
+
+Widgets with no widget-specific static keys beyond the common keys:
+
+- `CanvasPanel`
+- `Overlay`
+- `VerticalBox`
+- `HorizontalBox`
+
+Exact widget-specific static keys:
+
+- `TextBlock`
+  - `text`
+  - `color`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `simple_text_mode`
+  - `strike_brush_tint`
+  - `strike_brush_material`
+  - `strike_brush_resource`
+  - `min_desired_width`
+  - `justification`
+  - `wrapping_policy`
+  - `auto_wrap_text`
+  - `wrap_text_at`
+  - `line_height_percentage`
+  - `apply_line_height_to_bottom_line`
+  - `margin`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `transform_policy`
+  - `overflow_policy`
+  - `shadow_offset`
+  - `shadow_color`
+- `RichTextBlock`
+  - `text`
+  - `color`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `strike_brush_tint`
+  - `strike_brush_material`
+  - `strike_brush_resource`
+  - `min_desired_width`
+  - `justification`
+  - `wrapping_policy`
+  - `auto_wrap_text`
+  - `wrap_text_at`
+  - `line_height_percentage`
+  - `apply_line_height_to_bottom_line`
+  - `margin`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `transform_policy`
+  - `overflow_policy`
+  - `shadow_offset`
+  - `shadow_color`
+  - `text_style_set`
+  - `decorator_classes`
+- `EditableText`
+  - `text`
+  - `hint_text`
+  - `is_read_only`
+  - `is_password`
+  - `minimum_desired_width`
+  - `is_caret_moved_when_gain_focus`
+  - `select_all_text_when_focused`
+  - `revert_text_on_escape`
+  - `clear_keyboard_focus_on_commit`
+  - `select_all_text_on_commit`
+  - `allow_context_menu`
+  - `justification`
+  - `overflow_policy`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `keyboard_type`
+  - `virtual_keyboard_options.enable_autocorrect`
+  - `virtual_keyboard_trigger`
+  - `virtual_keyboard_dismiss_action`
+  - `foreground_color`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+- `EditableTextBox`
+  - `text`
+  - `hint_text`
+  - `is_read_only`
+  - `is_password`
+  - `minimum_desired_width`
+  - `is_caret_moved_when_gain_focus`
+  - `select_all_text_when_focused`
+  - `revert_text_on_escape`
+  - `clear_keyboard_focus_on_commit`
+  - `select_all_text_on_commit`
+  - `allow_context_menu`
+  - `justification`
+  - `overflow_policy`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `keyboard_type`
+  - `virtual_keyboard_options.enable_autocorrect`
+  - `virtual_keyboard_trigger`
+  - `virtual_keyboard_dismiss_action`
+  - `foreground_color`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `normal_tint`
+  - `hovered_tint`
+  - `focused_tint`
+  - `read_only_tint`
+  - `normal_resource`
+  - `hovered_resource`
+  - `focused_resource`
+  - `read_only_resource`
+- `MultiLineEditableTextBox`
+  - `text`
+  - `hint_text`
+  - `is_read_only`
+  - `wrapping_policy`
+  - `auto_wrap_text`
+  - `wrap_text_at`
+  - `justification`
+  - `line_height_percentage`
+  - `apply_line_height_to_bottom_line`
+  - `margin`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `foreground_color`
+  - `focused_foreground_color`
+  - `read_only_foreground_color`
+  - `allow_context_menu`
+  - `virtual_keyboard_options.enable_autocorrect`
+  - `virtual_keyboard_dismiss_action`
+  - `scroll_bar_thickness`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `normal_tint`
+  - `hovered_tint`
+  - `focused_tint`
+  - `read_only_tint`
+  - `normal_resource`
+  - `hovered_resource`
+  - `focused_resource`
+  - `read_only_resource`
+- `MultiLineEditableText`
+  - `text`
+  - `hint_text`
+  - `is_read_only`
+  - `select_all_text_when_focused`
+  - `revert_text_on_escape`
+  - `clear_keyboard_focus_on_commit`
+  - `allow_context_menu`
+  - `wrapping_policy`
+  - `auto_wrap_text`
+  - `wrap_text_at`
+  - `justification`
+  - `line_height_percentage`
+  - `apply_line_height_to_bottom_line`
+  - `margin`
+  - `shaped_text_options.override_text_shaping_method`
+  - `shaped_text_options.text_shaping_method`
+  - `shaped_text_options.override_text_flow_direction`
+  - `shaped_text_options.text_flow_direction`
+  - `virtual_keyboard_options.enable_autocorrect`
+  - `virtual_keyboard_dismiss_action`
+  - `foreground_color`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+- `Image`
+  - `color`
+  - `brush_tint`
+  - `flip_for_right_to_left_flow_direction`
+  - `image_size`
+  - `draw_as`
+  - `tiling`
+  - `mirroring`
+  - `image_type`
+  - `margin`
+  - `outline_settings.corner_radii`
+  - `outline_settings.color`
+  - `outline_settings.width`
+  - `outline_settings.rounding_type`
+  - `outline_settings.use_brush_transparency`
+  - `brush_material`
+  - `brush_resource`
+- `Button`
+  - `color`
+  - `background_color`
+  - `is_focusable`
+  - `allow_drag_drop`
+  - `click_method`
+  - `touch_method`
+  - `press_method`
+  - `normal_draw_as`
+  - `hovered_draw_as`
+  - `pressed_draw_as`
+  - `disabled_draw_as`
+  - `normal_image_size`
+  - `hovered_image_size`
+  - `pressed_image_size`
+  - `disabled_image_size`
+  - `normal_margin`
+  - `hovered_margin`
+  - `pressed_margin`
+  - `disabled_margin`
+  - `normal_tiling`
+  - `hovered_tiling`
+  - `pressed_tiling`
+  - `disabled_tiling`
+  - `normal_mirroring`
+  - `hovered_mirroring`
+  - `pressed_mirroring`
+  - `disabled_mirroring`
+  - `normal_image_type`
+  - `hovered_image_type`
+  - `pressed_image_type`
+  - `disabled_image_type`
+  - `normal_outline_settings.corner_radii`
+  - `hovered_outline_settings.corner_radii`
+  - `pressed_outline_settings.corner_radii`
+  - `disabled_outline_settings.corner_radii`
+  - `normal_outline_settings.color`
+  - `hovered_outline_settings.color`
+  - `pressed_outline_settings.color`
+  - `disabled_outline_settings.color`
+  - `normal_outline_settings.width`
+  - `hovered_outline_settings.width`
+  - `pressed_outline_settings.width`
+  - `disabled_outline_settings.width`
+  - `normal_outline_settings.rounding_type`
+  - `hovered_outline_settings.rounding_type`
+  - `pressed_outline_settings.rounding_type`
+  - `disabled_outline_settings.rounding_type`
+  - `normal_outline_settings.use_brush_transparency`
+  - `hovered_outline_settings.use_brush_transparency`
+  - `pressed_outline_settings.use_brush_transparency`
+  - `disabled_outline_settings.use_brush_transparency`
+  - `normal_tint`
+  - `hovered_tint`
+  - `pressed_tint`
+  - `disabled_tint`
+  - `normal_foreground`
+  - `hovered_foreground`
+  - `pressed_foreground`
+  - `disabled_foreground`
+  - `normal_padding`
+  - `pressed_padding`
+  - `normal_material`
+  - `hovered_material`
+  - `pressed_material`
+  - `disabled_material`
+  - `normal_resource`
+  - `hovered_resource`
+  - `pressed_resource`
+  - `disabled_resource`
+- `CheckBox`
+  - `checked_state`
+  - `check_box_type`
+  - `horizontal_alignment`
+  - `click_method`
+  - `touch_method`
+  - `press_method`
+  - `is_focusable`
+  - `padding`
+  - `unchecked_draw_as`
+  - `unchecked_hovered_draw_as`
+  - `unchecked_pressed_draw_as`
+  - `checked_draw_as`
+  - `checked_hovered_draw_as`
+  - `checked_pressed_draw_as`
+  - `undetermined_draw_as`
+  - `undetermined_hovered_draw_as`
+  - `undetermined_pressed_draw_as`
+  - `background_draw_as`
+  - `background_hovered_draw_as`
+  - `background_pressed_draw_as`
+  - `unchecked_image_size`
+  - `unchecked_hovered_image_size`
+  - `unchecked_pressed_image_size`
+  - `checked_image_size`
+  - `checked_hovered_image_size`
+  - `checked_pressed_image_size`
+  - `undetermined_image_size`
+  - `undetermined_hovered_image_size`
+  - `undetermined_pressed_image_size`
+  - `background_image_size`
+  - `background_hovered_image_size`
+  - `background_pressed_image_size`
+  - `unchecked_margin`
+  - `unchecked_hovered_margin`
+  - `unchecked_pressed_margin`
+  - `checked_margin`
+  - `checked_hovered_margin`
+  - `checked_pressed_margin`
+  - `undetermined_margin`
+  - `undetermined_hovered_margin`
+  - `undetermined_pressed_margin`
+  - `background_margin`
+  - `background_hovered_margin`
+  - `background_pressed_margin`
+  - `foreground_color`
+  - `hovered_foreground`
+  - `pressed_foreground`
+  - `checked_foreground`
+  - `checked_hovered_foreground`
+  - `checked_pressed_foreground`
+  - `undetermined_foreground`
+  - `border_background_color`
+  - `unchecked_tint`
+  - `unchecked_hovered_tint`
+  - `unchecked_pressed_tint`
+  - `checked_tint`
+  - `checked_hovered_tint`
+  - `checked_pressed_tint`
+  - `undetermined_tint`
+  - `undetermined_hovered_tint`
+  - `undetermined_pressed_tint`
+  - `background_tint`
+  - `background_hovered_tint`
+  - `background_pressed_tint`
+  - `unchecked_material`
+  - `unchecked_hovered_material`
+  - `unchecked_pressed_material`
+  - `checked_material`
+  - `checked_hovered_material`
+  - `checked_pressed_material`
+  - `undetermined_material`
+  - `undetermined_hovered_material`
+  - `undetermined_pressed_material`
+  - `background_material`
+  - `background_hovered_material`
+  - `background_pressed_material`
+  - `unchecked_resource`
+  - `unchecked_hovered_resource`
+  - `unchecked_pressed_resource`
+  - `checked_resource`
+  - `checked_hovered_resource`
+  - `checked_pressed_resource`
+  - `undetermined_resource`
+  - `undetermined_hovered_resource`
+  - `undetermined_pressed_resource`
+  - `background_resource`
+  - `background_hovered_resource`
+  - `background_pressed_resource`
+- `ComboBoxKey`
+  - `options`
+  - `selected_option`
+  - `content_padding`
+  - `max_list_height`
+  - `has_down_arrow`
+  - `enable_gamepad_navigation_mode`
+  - `foreground_color`
+  - `is_focusable`
+- `ComboBox`
+  - `items`
+  - `is_focusable`
+- `ComboBoxString`
+  - `options`
+  - `selected_option`
+  - `content_padding`
+  - `max_list_height`
+  - `has_down_arrow`
+  - `enable_gamepad_navigation_mode`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `foreground_color`
+  - `is_focusable`
+- `DynamicEntryBox`
+  - `entry_spacing`
+  - `spacing_pattern`
+  - `entry_box_type`
+  - `entry_size_rule.value`
+  - `entry_size_rule.size_rule`
+  - `entry_horizontal_alignment`
+  - `entry_vertical_alignment`
+  - `max_element_size`
+  - `radial_box_settings.starting_angle`
+  - `radial_box_settings.distribute_items_evenly`
+  - `radial_box_settings.clockwise_order`
+  - `radial_box_settings.angle_between_items`
+  - `radial_box_settings.sector_central_angle`
+  - `entry_widget_class`
+  - `num_designer_preview_entries`
+- `MenuAnchor`
+  - `menu_class`
+  - `placement`
+  - `fit_in_window`
+  - `defer_painting_after_window_content`
+  - `use_application_menu_stack`
+  - `show_menu_background`
+- `WindowTitleBarArea`
+  - `window_buttons_enabled`
+  - `double_click_toggles_fullscreen`
+- `StackBox`
+  - `orientation`
+- `ExpandableArea`
+  - `is_expanded`
+  - `max_height`
+  - `header_padding`
+  - `area_padding`
+  - `border_color`
+  - `rollout_animation_seconds`
+  - `border_tint`
+  - `border_image_size`
+  - `border_draw_as`
+  - `border_tiling`
+  - `border_mirroring`
+  - `border_image_type`
+  - `border_margin`
+  - `border_outline_settings.corner_radii`
+  - `border_outline_settings.color`
+  - `border_outline_settings.width`
+  - `border_outline_settings.rounding_type`
+  - `border_outline_settings.use_brush_transparency`
+  - `border_material`
+  - `border_resource`
+  - `collapsed_tint`
+  - `expanded_tint`
+  - `collapsed_material`
+  - `expanded_material`
+  - `collapsed_resource`
+  - `expanded_resource`
+  - child widgets may use `parent_slot "Header"` or `parent_slot "Body"` to target the named slots
+- `NamedSlot`
+  - no extra static keys
+  - supports a single child widget through the normal content tree
+- `InputKeySelector`
+  - `selected_key.key`
+  - `selected_key.shift`
+  - `selected_key.ctrl`
+  - `selected_key.alt`
+  - `selected_key.cmd`
+  - `margin`
+  - `key_selection_text`
+  - `key_selection_text.namespace`
+  - `key_selection_text.key`
+  - `no_key_specified_text`
+  - `no_key_specified_text.namespace`
+  - `no_key_specified_text.key`
+  - `allow_modifier_keys`
+  - `allow_gamepad_keys`
+  - `escape_keys`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+  - `foreground_color`
+- `ScrollBar`
+  - `orientation`
+  - `thickness`
+  - `padding`
+  - `always_show_scrollbar`
+  - `always_show_scrollbar_track`
+  - `style_bar_thickness`
+  - `horizontal_background_draw_as`
+  - `horizontal_background_tiling`
+  - `horizontal_background_mirroring`
+  - `horizontal_background_image_type`
+  - `horizontal_background_image_size`
+  - `horizontal_background_margin`
+  - `horizontal_background_tint`
+  - `horizontal_background_material`
+  - `horizontal_background_resource`
+  - `vertical_background_draw_as`
+  - `vertical_background_tiling`
+  - `vertical_background_mirroring`
+  - `vertical_background_image_type`
+  - `vertical_background_image_size`
+  - `vertical_background_margin`
+  - `vertical_background_tint`
+  - `vertical_background_material`
+  - `vertical_background_resource`
+  - `vertical_top_slot_draw_as`
+  - `vertical_top_slot_tiling`
+  - `vertical_top_slot_mirroring`
+  - `vertical_top_slot_image_type`
+  - `vertical_top_slot_image_size`
+  - `vertical_top_slot_margin`
+  - `vertical_top_slot_tint`
+  - `vertical_top_slot_material`
+  - `vertical_top_slot_resource`
+  - `horizontal_top_slot_draw_as`
+  - `horizontal_top_slot_tiling`
+  - `horizontal_top_slot_mirroring`
+  - `horizontal_top_slot_image_type`
+  - `horizontal_top_slot_image_size`
+  - `horizontal_top_slot_margin`
+  - `horizontal_top_slot_tint`
+  - `horizontal_top_slot_material`
+  - `horizontal_top_slot_resource`
+  - `vertical_bottom_slot_draw_as`
+  - `vertical_bottom_slot_tiling`
+  - `vertical_bottom_slot_mirroring`
+  - `vertical_bottom_slot_image_type`
+  - `vertical_bottom_slot_image_size`
+  - `vertical_bottom_slot_margin`
+  - `vertical_bottom_slot_tint`
+  - `vertical_bottom_slot_material`
+  - `vertical_bottom_slot_resource`
+  - `horizontal_bottom_slot_draw_as`
+  - `horizontal_bottom_slot_tiling`
+  - `horizontal_bottom_slot_mirroring`
+  - `horizontal_bottom_slot_image_type`
+  - `horizontal_bottom_slot_image_size`
+  - `horizontal_bottom_slot_margin`
+  - `horizontal_bottom_slot_tint`
+  - `horizontal_bottom_slot_material`
+  - `horizontal_bottom_slot_resource`
+  - `normal_thumb_draw_as`
+  - `normal_thumb_tiling`
+  - `normal_thumb_mirroring`
+  - `normal_thumb_image_type`
+  - `normal_thumb_image_size`
+  - `normal_thumb_margin`
+  - `normal_thumb_tint`
+  - `normal_thumb_material`
+  - `normal_thumb_resource`
+  - `hovered_thumb_draw_as`
+  - `hovered_thumb_tiling`
+  - `hovered_thumb_mirroring`
+  - `hovered_thumb_image_type`
+  - `hovered_thumb_image_size`
+  - `hovered_thumb_margin`
+  - `hovered_thumb_tint`
+  - `hovered_thumb_material`
+  - `hovered_thumb_resource`
+  - `dragged_thumb_draw_as`
+  - `dragged_thumb_tiling`
+  - `dragged_thumb_mirroring`
+  - `dragged_thumb_image_type`
+  - `dragged_thumb_image_size`
+  - `dragged_thumb_margin`
+  - `dragged_thumb_tint`
+  - `dragged_thumb_material`
+  - `dragged_thumb_resource`
+- `Border`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+  - `show_effect_when_disabled`
+  - `desired_size_scale`
+  - `content_color`
+  - `brush_tint`
+  - `image_size`
+  - `draw_as`
+  - `tiling`
+  - `mirroring`
+  - `image_type`
+  - `margin`
+  - `outline_settings.corner_radii`
+  - `outline_settings.color`
+  - `outline_settings.width`
+  - `outline_settings.rounding_type`
+  - `outline_settings.use_brush_transparency`
+  - `brush_material`
+  - `brush_resource`
+- `ProgressBar`
+  - `percent`
+  - `fill_color`
+  - `fill_type`
+  - `fill_style`
+  - `is_marquee`
+  - `border_padding`
+  - `enable_fill_animation`
+  - `background_image_size`
+  - `fill_image_size`
+  - `marquee_image_size`
+  - `background_draw_as`
+  - `fill_draw_as`
+  - `marquee_draw_as`
+  - `background_tiling`
+  - `fill_tiling`
+  - `marquee_tiling`
+  - `background_mirroring`
+  - `fill_mirroring`
+  - `marquee_mirroring`
+  - `background_image_type`
+  - `fill_image_type`
+  - `marquee_image_type`
+  - `background_margin`
+  - `fill_margin`
+  - `marquee_margin`
+  - `background_outline_settings.corner_radii`
+  - `fill_outline_settings.corner_radii`
+  - `marquee_outline_settings.corner_radii`
+  - `background_outline_settings.color`
+  - `fill_outline_settings.color`
+  - `marquee_outline_settings.color`
+  - `background_outline_settings.width`
+  - `fill_outline_settings.width`
+  - `marquee_outline_settings.width`
+  - `background_outline_settings.rounding_type`
+  - `fill_outline_settings.rounding_type`
+  - `marquee_outline_settings.rounding_type`
+  - `background_outline_settings.use_brush_transparency`
+  - `fill_outline_settings.use_brush_transparency`
+  - `marquee_outline_settings.use_brush_transparency`
+  - `background_tint`
+  - `fill_tint`
+  - `marquee_tint`
+  - `background_material`
+  - `fill_material`
+  - `marquee_material`
+  - `background_resource`
+  - `fill_resource`
+  - `marquee_resource`
+- `Slider`
+  - `value`
+  - `min_value`
+  - `max_value`
+  - `orientation`
+  - `bar_color`
+  - `handle_color`
+  - `indent_handle`
+  - `locked`
+  - `step_size`
+  - `mouse_uses_step`
+  - `requires_controller_lock`
+  - `is_focusable`
+  - `prevent_throttling`
+  - `bar_thickness`
+  - `normal_bar_image_size`
+  - `hovered_bar_image_size`
+  - `disabled_bar_image_size`
+  - `normal_thumb_image_size`
+  - `hovered_thumb_image_size`
+  - `disabled_thumb_image_size`
+  - `normal_bar_draw_as`
+  - `hovered_bar_draw_as`
+  - `disabled_bar_draw_as`
+  - `normal_thumb_draw_as`
+  - `hovered_thumb_draw_as`
+  - `disabled_thumb_draw_as`
+  - `normal_bar_tiling`
+  - `hovered_bar_tiling`
+  - `disabled_bar_tiling`
+  - `normal_thumb_tiling`
+  - `hovered_thumb_tiling`
+  - `disabled_thumb_tiling`
+  - `normal_bar_mirroring`
+  - `hovered_bar_mirroring`
+  - `disabled_bar_mirroring`
+  - `normal_thumb_mirroring`
+  - `hovered_thumb_mirroring`
+  - `disabled_thumb_mirroring`
+  - `normal_bar_image_type`
+  - `hovered_bar_image_type`
+  - `disabled_bar_image_type`
+  - `normal_thumb_image_type`
+  - `hovered_thumb_image_type`
+  - `disabled_thumb_image_type`
+  - `normal_bar_margin`
+  - `hovered_bar_margin`
+  - `disabled_bar_margin`
+  - `normal_thumb_margin`
+  - `hovered_thumb_margin`
+  - `disabled_thumb_margin`
+  - `normal_bar_outline_settings.corner_radii`
+  - `hovered_bar_outline_settings.corner_radii`
+  - `disabled_bar_outline_settings.corner_radii`
+  - `normal_thumb_outline_settings.corner_radii`
+  - `hovered_thumb_outline_settings.corner_radii`
+  - `disabled_thumb_outline_settings.corner_radii`
+  - `normal_bar_outline_settings.color`
+  - `hovered_bar_outline_settings.color`
+  - `disabled_bar_outline_settings.color`
+  - `normal_thumb_outline_settings.color`
+  - `hovered_thumb_outline_settings.color`
+  - `disabled_thumb_outline_settings.color`
+  - `normal_bar_outline_settings.width`
+  - `hovered_bar_outline_settings.width`
+  - `disabled_bar_outline_settings.width`
+  - `normal_thumb_outline_settings.width`
+  - `hovered_thumb_outline_settings.width`
+  - `disabled_thumb_outline_settings.width`
+  - `normal_bar_outline_settings.rounding_type`
+  - `hovered_bar_outline_settings.rounding_type`
+  - `disabled_bar_outline_settings.rounding_type`
+  - `normal_thumb_outline_settings.rounding_type`
+  - `hovered_thumb_outline_settings.rounding_type`
+  - `disabled_thumb_outline_settings.rounding_type`
+  - `normal_bar_outline_settings.use_brush_transparency`
+  - `hovered_bar_outline_settings.use_brush_transparency`
+  - `disabled_bar_outline_settings.use_brush_transparency`
+  - `normal_thumb_outline_settings.use_brush_transparency`
+  - `hovered_thumb_outline_settings.use_brush_transparency`
+  - `disabled_thumb_outline_settings.use_brush_transparency`
+  - `normal_bar_tint`
+  - `hovered_bar_tint`
+  - `disabled_bar_tint`
+  - `normal_thumb_tint`
+  - `hovered_thumb_tint`
+  - `disabled_thumb_tint`
+  - `normal_bar_material`
+  - `hovered_bar_material`
+  - `disabled_bar_material`
+  - `normal_thumb_material`
+  - `hovered_thumb_material`
+  - `disabled_thumb_material`
+  - `normal_bar_resource`
+  - `hovered_bar_resource`
+  - `disabled_bar_resource`
+  - `normal_thumb_resource`
+  - `hovered_thumb_resource`
+  - `disabled_thumb_resource`
+- `SpinBox`
+  - `value`
+  - `min_value`
+  - `max_value`
+  - `min_slider_value`
+  - `max_slider_value`
+  - `delta`
+  - `slider_exponent`
+  - `min_fractional_digits`
+  - `max_fractional_digits`
+  - `always_uses_delta_snap`
+  - `enable_slider`
+  - `min_desired_width`
+  - `keyboard_type`
+  - `clear_keyboard_focus_on_commit`
+  - `select_all_text_on_commit`
+  - `justification`
+  - `foreground_color`
+  - `background_image_size`
+  - `active_background_image_size`
+  - `hovered_background_image_size`
+  - `active_fill_image_size`
+  - `hovered_fill_image_size`
+  - `inactive_fill_image_size`
+  - `arrows_image_size`
+  - `background_draw_as`
+  - `active_background_draw_as`
+  - `hovered_background_draw_as`
+  - `active_fill_draw_as`
+  - `hovered_fill_draw_as`
+  - `inactive_fill_draw_as`
+  - `arrows_draw_as`
+  - `background_tiling`
+  - `active_background_tiling`
+  - `hovered_background_tiling`
+  - `active_fill_tiling`
+  - `hovered_fill_tiling`
+  - `inactive_fill_tiling`
+  - `arrows_tiling`
+  - `background_mirroring`
+  - `active_background_mirroring`
+  - `hovered_background_mirroring`
+  - `active_fill_mirroring`
+  - `hovered_fill_mirroring`
+  - `inactive_fill_mirroring`
+  - `arrows_mirroring`
+  - `background_image_type`
+  - `active_background_image_type`
+  - `hovered_background_image_type`
+  - `active_fill_image_type`
+  - `hovered_fill_image_type`
+  - `inactive_fill_image_type`
+  - `arrows_image_type`
+  - `background_margin`
+  - `active_background_margin`
+  - `hovered_background_margin`
+  - `active_fill_margin`
+  - `hovered_fill_margin`
+  - `inactive_fill_margin`
+  - `arrows_margin`
+  - `text_padding`
+  - `inset_padding`
+  - `background_tint`
+  - `active_background_tint`
+  - `hovered_background_tint`
+  - `active_fill_tint`
+  - `hovered_fill_tint`
+  - `inactive_fill_tint`
+  - `arrows_tint`
+  - `background_resource`
+  - `active_background_resource`
+  - `hovered_background_resource`
+  - `active_fill_resource`
+  - `hovered_fill_resource`
+  - `inactive_fill_resource`
+  - `arrows_resource`
+  - `font_size`
+  - `font_object`
+  - `typeface_font_name`
+  - `letter_spacing`
+  - `font_material`
+  - `outline_size`
+  - `outline_color`
+  - `outline_material`
+- `ScrollBox`
+  - `orientation`
+  - `scroll_bar_visibility`
+  - `consume_mouse_wheel`
+  - `scroll_bar_thickness`
+  - `scroll_bar_padding`
+  - `always_show_scrollbar`
+  - `always_show_scrollbar_track`
+  - `allow_overscroll`
+  - `animate_wheel_scrolling`
+  - `scroll_animation_interpolation_speed`
+  - `wheel_scroll_multiplier`
+  - `touch_scrolling_enabled`
+  - `consume_pointer_input`
+  - `scroll_when_focus_changes`
+  - `navigation_destination`
+  - `allow_right_click_drag_scrolling`
+  - `is_focusable`
+  - `style_bar_thickness`
+  - `horizontal_scrolled_content_padding`
+  - `vertical_scrolled_content_padding`
+  - `top_shadow_draw_as`
+  - `bottom_shadow_draw_as`
+  - `left_shadow_draw_as`
+  - `right_shadow_draw_as`
+  - `horizontal_background_draw_as`
+  - `vertical_background_draw_as`
+  - `vertical_top_slot_draw_as`
+  - `horizontal_top_slot_draw_as`
+  - `vertical_bottom_slot_draw_as`
+  - `horizontal_bottom_slot_draw_as`
+  - `normal_thumb_draw_as`
+  - `hovered_thumb_draw_as`
+  - `dragged_thumb_draw_as`
+  - `top_shadow_tiling`
+  - `bottom_shadow_tiling`
+  - `left_shadow_tiling`
+  - `right_shadow_tiling`
+  - `horizontal_background_tiling`
+  - `vertical_background_tiling`
+  - `vertical_top_slot_tiling`
+  - `horizontal_top_slot_tiling`
+  - `vertical_bottom_slot_tiling`
+  - `horizontal_bottom_slot_tiling`
+  - `normal_thumb_tiling`
+  - `hovered_thumb_tiling`
+  - `dragged_thumb_tiling`
+  - `top_shadow_mirroring`
+  - `bottom_shadow_mirroring`
+  - `left_shadow_mirroring`
+  - `right_shadow_mirroring`
+  - `horizontal_background_mirroring`
+  - `vertical_background_mirroring`
+  - `vertical_top_slot_mirroring`
+  - `horizontal_top_slot_mirroring`
+  - `vertical_bottom_slot_mirroring`
+  - `horizontal_bottom_slot_mirroring`
+  - `normal_thumb_mirroring`
+  - `hovered_thumb_mirroring`
+  - `dragged_thumb_mirroring`
+  - `top_shadow_image_type`
+  - `bottom_shadow_image_type`
+  - `left_shadow_image_type`
+  - `right_shadow_image_type`
+  - `horizontal_background_image_type`
+  - `vertical_background_image_type`
+  - `vertical_top_slot_image_type`
+  - `horizontal_top_slot_image_type`
+  - `vertical_bottom_slot_image_type`
+  - `horizontal_bottom_slot_image_type`
+  - `normal_thumb_image_type`
+  - `hovered_thumb_image_type`
+  - `dragged_thumb_image_type`
+  - `top_shadow_image_size`
+  - `bottom_shadow_image_size`
+  - `left_shadow_image_size`
+  - `right_shadow_image_size`
+  - `horizontal_background_image_size`
+  - `vertical_background_image_size`
+  - `vertical_top_slot_image_size`
+  - `horizontal_top_slot_image_size`
+  - `vertical_bottom_slot_image_size`
+  - `horizontal_bottom_slot_image_size`
+  - `normal_thumb_image_size`
+  - `hovered_thumb_image_size`
+  - `dragged_thumb_image_size`
+  - `top_shadow_margin`
+  - `bottom_shadow_margin`
+  - `left_shadow_margin`
+  - `right_shadow_margin`
+  - `horizontal_background_margin`
+  - `vertical_background_margin`
+  - `vertical_top_slot_margin`
+  - `horizontal_top_slot_margin`
+  - `vertical_bottom_slot_margin`
+  - `horizontal_bottom_slot_margin`
+  - `normal_thumb_margin`
+  - `hovered_thumb_margin`
+  - `dragged_thumb_margin`
+  - `top_shadow_tint`
+  - `bottom_shadow_tint`
+  - `left_shadow_tint`
+  - `right_shadow_tint`
+  - `horizontal_background_tint`
+  - `vertical_background_tint`
+  - `vertical_top_slot_tint`
+  - `horizontal_top_slot_tint`
+  - `vertical_bottom_slot_tint`
+  - `horizontal_bottom_slot_tint`
+  - `normal_thumb_tint`
+  - `hovered_thumb_tint`
+  - `dragged_thumb_tint`
+  - `top_shadow_material`
+  - `bottom_shadow_material`
+  - `left_shadow_material`
+  - `right_shadow_material`
+  - `horizontal_background_material`
+  - `vertical_background_material`
+  - `vertical_top_slot_material`
+  - `horizontal_top_slot_material`
+  - `vertical_bottom_slot_material`
+  - `horizontal_bottom_slot_material`
+  - `normal_thumb_material`
+  - `hovered_thumb_material`
+  - `dragged_thumb_material`
+  - `top_shadow_resource`
+  - `bottom_shadow_resource`
+  - `left_shadow_resource`
+  - `right_shadow_resource`
+  - `horizontal_background_resource`
+  - `vertical_background_resource`
+  - `vertical_top_slot_resource`
+  - `horizontal_top_slot_resource`
+  - `vertical_bottom_slot_resource`
+  - `horizontal_bottom_slot_resource`
+  - `normal_thumb_resource`
+  - `hovered_thumb_resource`
+  - `dragged_thumb_resource`
+- `WrapBox`
+  - `inner_slot_padding`
+  - `wrap_size`
+  - `explicit_wrap_size`
+  - `horizontal_alignment`
+  - `orientation`
+- `UniformGridPanel`
+  - `slot_padding`
+  - `min_desired_slot_width`
+  - `min_desired_slot_height`
+- `GridPanel`
+  - `column_fill`
+  - `row_fill`
+- `ListView`
+  - `entry_widget_class`
+  - `orientation`
+  - `selection_mode`
+  - `consume_mouse_wheel`
+  - `clear_selection_on_click`
+  - `is_focusable`
+  - `clear_scroll_velocity_on_selection`
+  - `return_focus_to_selection`
+  - `scroll_into_view_alignment`
+  - `horizontal_entry_spacing`
+  - `vertical_entry_spacing`
+  - `scroll_bar_padding`
+  - `wheel_scroll_multiplier`
+  - `enable_scroll_animation`
+  - `scroll_animation_interpolation_speed`
+  - `enable_touch_animated_scrolling`
+  - `allow_overscroll`
+  - `touch_scrolling_enabled`
+  - `pointer_scrolling_enabled`
+  - `gamepad_scrolling_enabled`
+  - `enable_right_click_scrolling`
+  - `enable_shadow_brush`
+  - `top_shadow_tint`
+  - `bottom_shadow_tint`
+  - `normal_thumb_tint`
+  - `hovered_thumb_tint`
+  - `dragged_thumb_tint`
+  - `top_shadow_material`
+  - `bottom_shadow_material`
+  - `normal_thumb_material`
+  - `hovered_thumb_material`
+  - `dragged_thumb_material`
+  - `top_shadow_resource`
+  - `bottom_shadow_resource`
+  - `normal_thumb_resource`
+  - `hovered_thumb_resource`
+  - `dragged_thumb_resource`
+  - `enable_fixed_line_offset`
+  - `fixed_line_scroll_offset`
+  - `allow_dragging`
+  - `allow_drag_drop`
+  - `drag_drop_visual_pivot`
+  - `drag_drop_visual_offset`
+  - `drag_drop_visual_entry_class`
+  - `drag_drop_operation_class`
+  - `select_item_on_navigation`
+  - `allow_keep_preselected_items`
+  - `num_designer_preview_entries`
+- `TileView`
+  - inherits `ListView`
+  - `entry_width`
+  - `entry_height`
+  - `tile_alignment`
+  - `wrap_horizontal_navigation`
+  - `scrollbar_disabled_visibility`
+  - `entry_size_includes_spacing`
+- `TreeView`
+  - inherits `ListView`
+- `SizeBox`
+  - `width_override`
+  - `height_override`
+  - `min_desired_width`
+  - `min_desired_height`
+  - `max_desired_width`
+  - `max_desired_height`
+  - `min_aspect_ratio`
+  - `max_aspect_ratio`
+- `ScaleBox`
+  - `stretch`
+  - `stretch_direction`
+  - `user_specified_scale`
+  - `ignore_inherited_scale`
+- `BackgroundBlur`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+  - `apply_alpha_to_blur`
+  - `blur_strength`
+  - `override_auto_radius`
+  - `blur_radius`
+  - `corner_radius`
+  - `fallback_brush_tint`
+  - `fallback_brush_resource`
+- `InvalidationBox`
+  - `can_cache`
+- `RetainerBox`
+  - `retain_rendering`
+  - `phase`
+  - `phase_count`
+  - `render_on_invalidation`
+  - `render_on_phase`
+  - `texture_parameter`
+  - `effect_material`
+- `SafeZone`
+  - `pad_left`
+  - `pad_right`
+  - `pad_top`
+  - `pad_bottom`
+- `Throbber`
+  - `number_of_pieces`
+  - `animate_horizontally`
+  - `animate_vertically`
+  - `animate_opacity`
+- `CircularThrobber`
+  - `number_of_pieces`
+  - `period`
+  - `radius`
+- `WidgetSwitcher`
+  - `active_widget_index`
+- `Spacer`
+  - `size`
+
+## Slot Keys
+
+Supported slot families and exact slot keys:
+
+- `CanvasPanelSlot`
+  - `anchors`
+  - `offsets`
+  - `alignment`
+  - `zorder`
+  - `auto_size`
+- `BorderSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `ButtonSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `OverlaySlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `VerticalBoxSlot`
+  - `padding`
+  - `size_rule`
+  - `size_value`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `HorizontalBoxSlot`
+  - `padding`
+  - `size_rule`
+  - `size_value`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `ScrollBoxSlot`
+  - `padding`
+  - `size_rule`
+  - `size_value`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `ScaleBoxSlot`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `SizeBoxSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `WrapBoxSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+  - `fill_empty_space`
+  - `fill_span_when_less_than`
+  - `force_new_line`
+- `UniformGridSlot`
+  - `row`
+  - `column`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `GridSlot`
+  - `padding`
+  - `row`
+  - `row_span`
+  - `column`
+  - `column_span`
+  - `layer`
+  - `nudge`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `WidgetSwitcherSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `BackgroundBlurSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `SafeZoneSlot`
+  - `padding`
+  - `safe_area_scale`
+  - `is_title_safe`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `WindowTitleBarAreaSlot`
+  - `padding`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+- `StackBoxSlot`
+  - `padding`
+  - `size_rule`
+  - `size_value`
+  - `horizontal_alignment`
+  - `vertical_alignment`
+
+## Animation Tracks
+
+Common animation tracks on supported widgets:
+
+- `visibility`
+- `render_opacity`
+- `render_transform.translation.{x,y}`
+- `render_transform.scale.{x,y}`
+- `render_transform.shear.{x,y}`
+- `render_transform.angle`
+- Float-like animation keys accept an optional interpolation token after the value:
+  `Constant`, `Linear`, `CubicAuto`, `CubicSmartAuto`, `CubicUser`, `CubicBreak`
+- If the interpolation token is omitted, the key defaults to `Linear`
+- Interpolation tokens apply to float-like tracks only; bool, enum, and integer tracks remain discrete
+
+Shared color track:
+
+- `color_and_opacity.{r,g,b,a}`
+- In the frozen scope, use this shared track only for widgets that actually round-trip through a color property path, such as `TextBlock`, `RichTextBlock`, `Image`, `Border`, and `ProgressBar`
+
+Animation-level settings:
+
+- `duration`
+- `duration` is optional and measured in seconds
+- If omitted, playback length is inferred from the latest keyed time
+- Validation rejects `duration` values shorter than the latest key in the same animation
+
+Slot animation:
+
+- `slot.offsets`
+- `slot.alignment.{x,y}`
+- `slot.padding`
+- `slot.horizontal_alignment`
+- `slot.vertical_alignment`
+- `slot.nudge.{x,y}`
+- `slot.offsets` and `slot.alignment.{x,y}` require `CanvasPanelSlot`
+- `slot.padding` only works on slot families that expose static `padding`
+- `slot.horizontal_alignment` and `slot.vertical_alignment` only work on slot families that expose those static keys
+- `slot.nudge.{x,y}` only works on `GridSlot`
+
+Exact widget-specific animation tracks:
+
+- `Button`
+  - `background_color.{r,g,b,a}`
+  - `normal_tint.{r,g,b,a}`
+  - `hovered_tint.{r,g,b,a}`
+  - `pressed_tint.{r,g,b,a}`
+  - `disabled_tint.{r,g,b,a}`
+  - `normal_padding`
+  - `pressed_padding`
+- `Image`
+  - `brush_tint.{r,g,b,a}`
+  - `image_size.{x,y}`
+- `Border`
+  - `brush_tint.{r,g,b,a}`
+- `CheckBox`
+  - `checked_state`
+  - `type`
+  - `horizontal_alignment`
+  - `click_method`
+  - `touch_method`
+  - `press_method`
+  - `unchecked_tint.{r,g,b,a}`
+  - `checked_tint.{r,g,b,a}`
+  - `undetermined_tint.{r,g,b,a}`
+  - `background_tint.{r,g,b,a}`
+- `TextBlock`
+  - `font_size`
+  - `min_desired_width`
+  - `line_height_percentage`
+  - `margin`
+  - `shadow_offset.{x,y}`
+  - `shadow_color.{r,g,b,a}`
+  - `wrap_text_at`
+  - `auto_wrap_text`
+  - `justification`
+  - `wrapping_policy`
+  - `transform_policy`
+  - `overflow_policy`
+- `RichTextBlock`
+  - `font_size`
+  - `min_desired_width`
+  - `line_height_percentage`
+  - `margin`
+  - `shadow_offset.{x,y}`
+  - `shadow_color.{r,g,b,a}`
+  - `wrap_text_at`
+  - `auto_wrap_text`
+  - `justification`
+  - `wrapping_policy`
+  - `transform_policy`
+  - `overflow_policy`
+- `EditableText`
+  - `foreground_color.{r,g,b,a}`
+  - `font_size`
+  - `letter_spacing`
+  - `outline_size`
+  - `outline_color.{r,g,b,a}`
+  - `minimum_desired_width`
+  - `justification`
+  - `overflow_policy`
+  - `is_read_only`
+  - `is_password`
+  - `is_caret_moved_when_gain_focus`
+  - `select_all_text_when_focused`
+  - `revert_text_on_escape`
+  - `clear_keyboard_focus_on_commit`
+  - `select_all_text_on_commit`
+  - `allow_context_menu`
+- `EditableTextBox`
+  - `foreground_color.{r,g,b,a}`
+  - `font_size`
+  - `letter_spacing`
+  - `outline_size`
+  - `outline_color.{r,g,b,a}`
+  - `minimum_desired_width`
+  - `justification`
+  - `overflow_policy`
+  - `is_read_only`
+  - `is_password`
+  - `is_caret_moved_when_gain_focus`
+  - `select_all_text_when_focused`
+  - `revert_text_on_escape`
+  - `clear_keyboard_focus_on_commit`
+  - `select_all_text_on_commit`
+  - `allow_context_menu`
+  - `normal_tint.{r,g,b,a}`
+  - `hovered_tint.{r,g,b,a}`
+  - `focused_tint.{r,g,b,a}`
+  - `read_only_tint.{r,g,b,a}`
+- `MultiLineEditableText`
+  - `foreground_color.{r,g,b,a}`
+  - `font_size`
+  - `letter_spacing`
+  - `outline_size`
+  - `outline_color.{r,g,b,a}`
+  - `justification`
+  - `wrapping_policy`
+  - `is_read_only`
+  - `auto_wrap_text`
+  - `allow_context_menu`
+  - `wrap_text_at`
+- `MultiLineEditableTextBox`
+  - `foreground_color.{r,g,b,a}`
+  - `focused_foreground_color.{r,g,b,a}`
+  - `read_only_foreground_color.{r,g,b,a}`
+  - `font_size`
+  - `letter_spacing`
+  - `outline_size`
+  - `outline_color.{r,g,b,a}`
+  - `justification`
+  - `wrapping_policy`
+  - `scroll_bar_thickness`
+  - `is_read_only`
+  - `auto_wrap_text`
+  - `allow_context_menu`
+  - `normal_tint.{r,g,b,a}`
+  - `hovered_tint.{r,g,b,a}`
+  - `focused_tint.{r,g,b,a}`
+  - `read_only_tint.{r,g,b,a}`
+- `ProgressBar`
+  - `percent`
+  - `border_padding.{x,y}`
+  - `fill_type`
+  - `fill_style`
+  - `is_marquee`
+  - `enable_fill_animation`
+  - `background_tint.{r,g,b,a}`
+  - `fill_tint.{r,g,b,a}`
+  - `marquee_tint.{r,g,b,a}`
+- `Slider`
+  - `value`
+  - `min_value`
+  - `max_value`
+  - `step_size`
+  - `bar_thickness`
+  - `orientation`
+  - `bar_color.{r,g,b,a}`
+  - `handle_color.{r,g,b,a}`
+  - `locked`
+  - `indent_handle`
+  - `mouse_uses_step`
+  - `requires_controller_lock`
+  - `is_focusable`
+  - `prevent_throttling`
+  - `normal_bar_tint.{r,g,b,a}`
+  - `hovered_bar_tint.{r,g,b,a}`
+  - `disabled_bar_tint.{r,g,b,a}`
+  - `normal_thumb_tint.{r,g,b,a}`
+  - `hovered_thumb_tint.{r,g,b,a}`
+  - `disabled_thumb_tint.{r,g,b,a}`
+- `SpinBox`
+  - `value`
+  - `min_value`
+  - `max_value`
+  - `min_slider_value`
+  - `max_slider_value`
+  - `delta`
+  - `slider_exponent`
+  - `min_desired_width`
+  - `min_fractional_digits`
+  - `max_fractional_digits`
+  - `font_size`
+  - `letter_spacing`
+  - `outline_size`
+  - `outline_color.{r,g,b,a}`
+  - `keyboard_type`
+  - `justification`
+  - `text_padding`
+  - `inset_padding`
+  - `background_tint.{r,g,b,a}`
+  - `active_background_tint.{r,g,b,a}`
+  - `hovered_background_tint.{r,g,b,a}`
+  - `active_fill_tint.{r,g,b,a}`
+  - `hovered_fill_tint.{r,g,b,a}`
+  - `inactive_fill_tint.{r,g,b,a}`
+  - `arrows_tint.{r,g,b,a}`
+- `ScrollBox`
+  - `orientation`
+  - `consume_mouse_wheel`
+  - `scroll_when_focus_changes`
+  - `navigation_destination`
+  - `scroll_bar_padding`
+  - `scroll_bar_thickness`
+  - `scroll_animation_interpolation_speed`
+  - `wheel_scroll_multiplier`
+  - `style_bar_thickness`
+  - `always_show_scrollbar`
+  - `always_show_scrollbar_track`
+  - `allow_overscroll`
+  - `animate_wheel_scrolling`
+  - `touch_scrolling_enabled`
+  - `consume_pointer_input`
+  - `allow_right_click_drag_scrolling`
+  - `is_focusable`
+  - `top_shadow_tint.{r,g,b,a}`
+  - `bottom_shadow_tint.{r,g,b,a}`
+  - `normal_thumb_tint.{r,g,b,a}`
+  - `hovered_thumb_tint.{r,g,b,a}`
+  - `dragged_thumb_tint.{r,g,b,a}`
+- `WrapBox`
+  - `inner_slot_padding.{x,y}`
+  - `wrap_size`
+  - `explicit_wrap_size`
+  - `orientation`
+  - `horizontal_alignment`
+- `UniformGridPanel`
+  - `slot_padding`
+  - `min_desired_slot_width`
+  - `min_desired_slot_height`
+- `ListView`
+  - `orientation`
+  - `selection_mode`
+  - `consume_mouse_wheel`
+  - `is_focusable`
+  - `horizontal_entry_spacing`
+  - `vertical_entry_spacing`
+  - `scroll_bar_padding`
+  - `wheel_scroll_multiplier`
+  - `allow_overscroll`
+  - `pointer_scrolling_enabled`
+  - `gamepad_scrolling_enabled`
+  - `enable_right_click_scrolling`
+- `TileView`
+  - inherits `ListView`
+  - `entry_width`
+  - `entry_height`
+  - `tile_alignment`
+  - `scrollbar_disabled_visibility`
+  - `wrap_horizontal_navigation`
+  - `entry_size_includes_spacing`
+- `TreeView`
+  - inherits `ListView`
+- `SizeBox`
+  - `width_override`
+  - `height_override`
+  - `min_desired_width`
+  - `min_desired_height`
+  - `max_desired_width`
+  - `max_desired_height`
+  - `min_aspect_ratio`
+  - `max_aspect_ratio`
+- `ScaleBox`
+  - `stretch`
+  - `stretch_direction`
+  - `user_specified_scale`
+  - `ignore_inherited_scale`
+- `BackgroundBlur`
+  - `apply_alpha_to_blur`
+  - `blur_strength`
+  - `blur_radius`
+  - `override_auto_radius`
+  - `corner_radius.{x,y,z,w}`
+  - `fallback_brush_tint.{r,g,b,a}`
+- `InvalidationBox`
+  - `can_cache`
+- `RetainerBox`
+  - `retain_rendering`
+  - `phase`
+  - `phase_count`
+  - `render_on_invalidation`
+  - `render_on_phase`
+- `SafeZone`
+  - `pad_left`
+  - `pad_right`
+  - `pad_top`
+  - `pad_bottom`
+- `Throbber`
+  - `number_of_pieces`
+  - `animate_horizontally`
+  - `animate_vertically`
+  - `animate_opacity`
+- `CircularThrobber`
+  - `number_of_pieces`
+  - `period`
+  - `radius`
+- `WidgetSwitcher`
+  - `active_widget_index`
+- `Spacer`
+  - `size.{x,y}`
+
+## Known Gaps
+
+Treat these as unsupported unless implementation and tests are updated:
+
+- any widget, static key, slot key, or animation track not listed above
+- `GridPanel` fill-array animation for `column_fill` and `row_fill`
+- brush resource animation
+- `font_material` animation
+- `outline_material` animation
+- `effect_material` animation
+- generic slot animation beyond `slot.offsets`, `slot.alignment.{x,y}`, `slot.padding`, `slot.horizontal_alignment`, `slot.vertical_alignment`, and `slot.nudge.{x,y}`
+- `SpinBox` interaction bool animation for `always_uses_delta_snap` and `enable_slider`
+
+## Safe Generation Rule
+
+If a requested property or track is not explicitly listed here, do not emit it as supported. Prefer a supported fallback or mark the request unsupported.

@@ -1,0 +1,4 @@
+interface:
+  display_name: "UE Widget Creator"
+  short_description: "Design, generate, and validate Widget DSL."
+  default_prompt: "Use $ue-widget-creator to analyze a UE UMG design, generate .widgetdsl, validate it against current support, and iterate until import-ready."

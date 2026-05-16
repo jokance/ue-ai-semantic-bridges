@@ -21,7 +21,7 @@ It is not Unreal runtime code, and it is not a standalone plugin. Its purpose is
 
 This setup consists of two parts:
 
-- `WidgetSemanticBridge`: the Unreal Editor plugin responsible for validation, preview, and import
+- `WidgetSemanticBridge`: the [Unreal Editor plugin](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f) responsible for validation, preview, and import
 - `ue-widget-creator`: the AI Agent skill responsible for requirement analysis and the DSL generation workflow
 
 The plugin executes the work. The skill defines the workflow.
@@ -35,6 +35,7 @@ Common benefits include:
 - faster UI prototyping for inventory, main menu, quest panels, popups, and similar screens
 - design mockups, sketches, or written requirements can be turned into importable Widget Blueprints more quickly, reducing information loss during implementation
 - because layout and part of the animation are expressed as `.widgetdsl` text, AI can understand, generate, and modify the UI description more easily, speeding up iteration on UI interaction, state changes, and flow adjustments
+- generated and re-exported DSL can also drive AI-written UI logic: after WBP changes, export DSL again and let AI update the logic, often removing the need to hand-write UI code; this is especially suitable for scripting languages such as Lua, TypeScript, or Python, where AI iterates faster than with C++ or Blueprint
 - validation and preview before import help catch unsupported widgets, properties, or layout issues earlier, reducing rework
 - bulk generation and modification of `.widgetdsl` files fits team collaboration and automation workflows better, making UI assets easier to version-control
 - with structural UI work handled by the plugin and skill, developers can spend more time on gameplay logic, interaction polish, and runtime behavior
@@ -43,7 +44,10 @@ Common benefits include:
 
 ### 1. Install the Plugin
 
+Plugin link: [WidgetSemanticBridge](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f)
+
 If the plugin comes from Fab, it is typically installed into the Unreal Engine directory via `Install to Engine`.
+
 
 `WidgetSemanticBridge` supports both installation modes:
 
@@ -107,6 +111,8 @@ Recommended workflow:
 5. Ask the Agent to run validate / preview first
 6. Ask the Agent to import the DSL and generate the Widget Blueprint
 
+Based on my experience, GPT-5.4+ models generate better UI results than other models. If another model does not produce the result you want, try GPT-5.4+.
+
 ### Example
 
 ```shell
@@ -166,10 +172,3 @@ This exports an existing Widget Blueprint back to `.widgetdsl`.
 - Click `Export DSL` to perform the export
 
 This is useful when you manually adjust the UI in UMG and want to sync the result back into DSL for further AI editing or version control.
-
-## Limitations
-
-- this workflow is not a fully open-ended UMG generator; some widgets, properties, slots, and animations are still unsupported
-- current animation generation is limited to the animation tracks implemented by `WidgetSemanticBridge`, not arbitrary custom tracks
-- some resource types and advanced animation capabilities are still unavailable, such as certain brush resource / material animations and some generic slot animations
-- complex runtime logic still needs to be implemented manually

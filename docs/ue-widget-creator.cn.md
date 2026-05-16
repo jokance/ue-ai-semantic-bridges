@@ -21,7 +21,7 @@
 
 这套方案由两部分组成：
 
-- `WidgetSemanticBridge`：Unreal Editor 插件，负责校验、预览、导入
+- `WidgetSemanticBridge`：[Unreal Editor 插件](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f)，负责校验、预览、导入
 - `ue-widget-creator`：AI Agent skill，负责需求分析和 DSL 生成流程
 
 插件负责执行，skill 负责工作流。
@@ -35,6 +35,7 @@
 - 更快做出 UI 原型，方便尽早验证背包、主菜单、任务面板、弹窗等功能界面
 - 设计稿、草图或文字说明可以更快落成可导入的 Widget Blueprint，减少实现链路中的信息损耗
 - 由于界面布局和部分动画已经以 `.widgetdsl` 文本形式表达，AI 可以更容易理解、生成和修改对应的界面描述，从而加快界面交互、状态切换和流程调整这类工作的迭代速度
+- 生成或重新导出的 DSL 也可以直接交给 AI 编写界面逻辑；WBP 修改后再次导出 DSL，AI 就能按最新界面调整逻辑代码，通常不再需要逐行手写 UI 代码，这也更推荐配合 Lua、TypeScript、Python 等脚本语言，而不是用 C++ 或蓝图编写大量界面逻辑
 - 在导入前先做校验和预览，能更早发现不受支持的控件、属性或布局问题，降低返工成本
 - 批量生成或修改 `.widgetdsl` 时更适合多人协作和自动化流程，便于把 UI 资产纳入版本管理
 - UI 结构性工作交给插件和 skill 处理后，开发者可以把更多时间放在玩法逻辑、交互细节和运行时行为实现上
@@ -43,7 +44,10 @@
 
 ### 1. 安装插件
 
+插件地址: [WidgetSemanticBridge](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f)
+
 如果插件来自 Fab，通常是通过 `Install to Engine` 安装到 Unreal 引擎目录。
+
 
 `WidgetSemanticBridge` 同时支持两种安装方式：
 
@@ -107,6 +111,9 @@
 5. 让 Agent 先执行 validate / preview
 6. 让 Agent 导入 DSL 并生成 Widget Blueprint
 
+
+根据我的使用经验，GPT-5.4+模型生成界面的能力比其它模型更优。如果你用其它模型达不到想要的效果，可以试试GPT-5.4+。
+
 ### 示例
 
 ```shell
@@ -166,10 +173,3 @@ $ue-widget-creator Create a full-screen inventory widget with a 4x7 item slot gr
 - 点击 `Export DSL` 执行导出
 
 适合在 UMG 里手动调整完界面后，把结果同步回 DSL 继续交给 AI 修改或纳入版本管理。
-
-## 使用限制
-
-- 这套工作流不是任意 UMG 自由生成器，仍有部分控件、属性、Slot 和动画不支持
-- 当前动画生成仅限 `WidgetSemanticBridge` 已实现的动画轨道，不支持任意自定义轨道
-- 某些资源类或高级动画能力仍未开放，例如部分 brush resource / material 动画、一些通用 slot 动画等
-- 复杂运行时逻辑仍需人工实现

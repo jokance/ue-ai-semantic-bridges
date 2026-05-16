@@ -26,3 +26,5 @@ Documentation:
 
 - [Guide (English)](docs/ue-widget-creator.en.md)
 - [Guide (中文)](docs/ue-widget-creator.cn.md)
+- [Guide (日本語)](docs/ue-widget-creator.ja.md)
+- [Guide (한국어)](docs/ue-widget-creator.ko.md)

@@ -54,6 +54,8 @@ Supported widget classes:
 - `Spacer`
 - `Throbber`
 - `CircularThrobber`
+- `UserWidget`
+- `CustomWidget`
 
 Out of scope:
 
@@ -62,6 +64,7 @@ Out of scope:
 - bindings and delegates
 - runtime-only list entry data
 - custom widget families outside the supported built-in catalog
+  except explicit `UserWidget` / `CustomWidget` references through `widget_class`
 
 Notation:
 
@@ -103,6 +106,10 @@ Structural child keys:
 - `render_shear`
 - `render_angle`
 - `render_pivot`
+- `widget_class`
+  Use only on `UserWidget` / `CustomWidget`.
+  Accepts a generated class path such as `/Game/UI/WBP_Entry.WBP_Entry_C`.
+  `/Game/UI/WBP_Entry.WBP_Entry` and `/Game/UI/WBP_Entry` are also accepted on import and resolved to the generated class when possible.
 
 Text-valued keys are normally authored as plain strings, with optional localization sidecars:
 
@@ -1252,6 +1259,10 @@ Exact widget-specific static keys:
   - `active_widget_index`
 - `Spacer`
   - `size`
+- `UserWidget`
+  - `widget_class`
+- `CustomWidget`
+  - `widget_class`
 
 ## Slot Keys
 
@@ -1668,11 +1679,18 @@ Exact widget-specific animation tracks:
 - `Spacer`
   - `size.{x,y}`
 
+Custom widget animation:
+
+- `UserWidget` and `CustomWidget` support only common widget animation tracks and slot animation tracks.
+- Custom class-specific properties are not reflected into the DSL yet.
+
 ## Known Gaps
 
 Treat these as unsupported unless implementation and tests are updated:
 
 - any widget, static key, slot key, or animation track not listed above
+- serializing the internal widget tree of a nested `UserWidget`
+- custom class-specific properties beyond common widget keys and slot keys
 - `GridPanel` fill-array animation for `column_fill` and `row_fill`
 - brush resource animation
 - `font_material` animation

@@ -104,6 +104,16 @@ CvsRoot CanvasPanel
       offsets "40,32,320,48"
 ```
 
+## Nested UserWidget Example
+
+```text
+Root CanvasPanel
+  Entry UserWidget
+    widget_class "/Game/UI/WBP_InventoryEntry.WBP_InventoryEntry_C"
+    slot
+      offsets "40,32,320,64"
+```
+
 ## Minimal Animation Example
 
 ```text

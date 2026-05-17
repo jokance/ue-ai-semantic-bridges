@@ -78,6 +78,10 @@ Supported top-level blueprint metadata:
 
 - `implements "UserObjectListEntry"`
   Use this on DSL files for `ListView` / `TileView` / `TreeView` entry widgets so import adds the `UserObjectListEntry` interface and export preserves it.
+- `parent_class "<ClassPath>"`
+  Use this to create or reparent the Widget Blueprint to a `UUserWidget` native class or Widget Blueprint generated class. `/Script/UMG.UserWidget` is the default and is omitted on canonical export.
+- `design_size "<Width>,<Height>"`
+  Use this to set the Widget Blueprint designer preview size. Import stores it on the generated class default widget as a custom design size; export preserves custom design sizes.
 
 Unsupported blueprint metadata:
 

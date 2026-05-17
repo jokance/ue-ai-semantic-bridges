@@ -17,6 +17,18 @@ For the supported widget catalog, blueprint metadata, property whitelist, and te
 implements "UserObjectListEntry"
 ```
 
+- parent Widget Blueprint / UserWidget class:
+
+```text
+parent_class "/Game/UI/WBP_UIBase.WBP_UIBase_C"
+```
+
+- designer preview size:
+
+```text
+design_size "1280,720"
+```
+
 - widget declaration:
 
 ```text
@@ -73,7 +85,9 @@ Quoted strings support:
 ## Canonical Rules
 
 - export omits default-valued widget and slot properties
-- export emits supported blueprint interfaces as top-level `implements "..."` lines before the root widget
+- export emits supported blueprint metadata before the root widget in this order: `parent_class`, `design_size`, `implements`
+- `parent_class` defaults to `/Script/UMG.UserWidget`, so canonical export omits that default
+- `design_size` exports only when the Widget Blueprint uses a custom designer size
 - `is_variable` defaults to `false`, so only `true` should normally appear
 - use stable widget names
 - keep indentation consistent
@@ -102,6 +116,17 @@ CvsRoot CanvasPanel
     is_variable "true"
     slot
       offsets "40,32,320,48"
+```
+
+## Blueprint Metadata Example
+
+```text
+parent_class "/Game/UI/WBP_UIBase.WBP_UIBase_C"
+design_size "1280,720"
+
+Root CanvasPanel
+  Title TextBlock
+    text "Parented"
 ```
 
 ## Nested UserWidget Example

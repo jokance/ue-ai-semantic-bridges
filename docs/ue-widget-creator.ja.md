@@ -57,10 +57,18 @@
 
 ### 2. skill を配置する
 
-`ue-widget-creator` は、使用する Agent ツールに応じて次の場所に配置します。
+Unreal Editor で `AIBridge` -> `Widget Semantic Bridge` を開き、`Agent Skill Setup` を使って、プラグインに同梱されている skill をプロジェクトへコピーします。デフォルトの `Destination Root` はプロジェクトルートですが、`Browse` をクリックして別のフォルダを選択することもできます。
 
-- Codex / Gemini CLI / GitHub Copilot: `.agents/skills/ue-widget-creator/`
+![](../assets/copy_skill.jpg)
+
+使用する Agent ツールに合わせて対象を選択してください。
+
+- Codex / Gemini CLI / Cursor / GitHub Copilot / OpenCode、およびその他の `AGENTS.md` 互換 Agent ツール: `.agents/skills/ue-widget-creator/`
 - Claude Code: `.claude/skills/ue-widget-creator/`
+
+GitHub から ZIP ファイルを直接ダウンロードし、展開したあと、`ue-widget-creator` ディレクトリを対応する `skills` ディレクトリへコピーすることもできます。
+
+![](../assets/github_skill.jpg)
 
 チームメンバーや自動化環境が同じワークフロー指示を共有できるよう、プロジェクトリポジトリ内に置くことを推奨します。
 

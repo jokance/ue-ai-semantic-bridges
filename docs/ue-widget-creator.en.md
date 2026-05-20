@@ -58,10 +58,19 @@ After installation, enable the plugin in your project: in Unreal Editor, go to `
 
 ### 2. Place the Skill
 
-`ue-widget-creator` should be placed according to the Agent tool you use:
+Open `AIBridge` -> `Widget Semantic Bridge` in Unreal Editor, then use `Agent Skill Setup` to copy the bundled skill into your project. The default `Destination Root` is the project root, but you can click `Browse` to choose another folder:
 
-- Codex / Gemini CLI / GitHub Copilot: `.agents/skills/ue-widget-creator/`
+![](../assets/copy_skill.jpg)
+
+Keep the target that matches the Agent tool you use:
+
+- Codex / Gemini CLI / Cursor / GitHub Copilot / OpenCode and other `AGENTS.md`-compatible Agent tools: `.agents/skills/ue-widget-creator/`
 - Claude Code: `.claude/skills/ue-widget-creator/`
+
+You can also download the ZIP file directly from GitHub, unzip it, and copy the `ue-widget-creator` directory into the corresponding `skills` directory:
+
+![](../assets/github_skill.jpg)
+
 
 It is recommended to keep it in the project repository so teammates and automation environments can share the same workflow instructions.
 

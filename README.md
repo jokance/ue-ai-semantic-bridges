@@ -1,5 +1,7 @@
 # AI Agent Skills
 
+English | [中文](docs/README.cn.md) | [日本語](docs/README.ja.md) | [한국어](docs/README.ko.md)
+
 This directory contains repository-local AI agent skills used together with project tooling and workflows.
 
 ## Available Skills
@@ -25,6 +27,23 @@ Showcase:
 Documentation:
 
 - [Guide (English)](docs/ue-widget-creator.en.md)
-- [Guide (中文)](docs/ue-widget-creator.cn.md)
-- [Guide (日本語)](docs/ue-widget-creator.ja.md)
-- [Guide (한국어)](docs/ue-widget-creator.ko.md)
+
+### `ue-material-creator`
+
+`ue-material-creator` is the skill workflow for `MaterialSemanticBridge`.
+
+It is used to help an AI agent:
+
+- analyze Unreal material requirements
+- generate or edit supported `.materialdsl`
+- distinguish material-instance DSL from material-graph DSL by DSL content and target asset type
+- stay inside the documented `MaterialExpression*`, property, material setting, graph layout, and output support surface
+- place material graph nodes clearly, including the Material Result node with `set graph.result_pos "X,Y"`
+- validate generated DSL before import
+- import validated DSL into Unreal `Material` or `MaterialInstanceConstant` assets
+
+This skill is meant for editor production workflows, not runtime material instance parameter changes or unrelated Unreal C++ work.
+
+Documentation:
+
+- [Guide (English)](docs/ue-material-creator.en.md)

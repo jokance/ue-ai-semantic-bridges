@@ -89,6 +89,7 @@ Use `Mode=material-schema` for exact values. Common settings include:
 - `material.shading_model`
 - `material.two_sided`
 - `material.opacity_mask_clip_value`
+- `graph.result_pos`
 
 ## Material Outputs
 

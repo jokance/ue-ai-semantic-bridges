@@ -28,6 +28,12 @@ set material.shading_model "default_lit"
 set material.two_sided "false"
 ```
 
+Graph layout setting:
+
+```text
+set graph.result_pos "360,0"
+```
+
 Node declaration:
 
 ```text

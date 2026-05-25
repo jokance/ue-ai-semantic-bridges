@@ -1,11 +1,11 @@
 ---
 name: ue-material-creator
-description: Use when analyzing Unreal material requirements, generating or editing `.materialdsl` files for MaterialSemanticBridge, validating reflected `MaterialExpression*` nodes and material outputs, and iterating material DSL until it is import-ready.
+description: Use when analyzing Unreal material requirements, generating or editing `.materialdsl` files for MaterialSemanticBridge, validating reflected `MaterialExpression*` nodes, material outputs, and graph layout settings such as the result node position, and iterating material DSL until it is import-ready.
 ---
 
 # UE Material Creator
 
-Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, normalize it through `MaterialSemanticCommandlet`, repair until normalization succeeds, then import the normalized DSL into the mapped `/Game` material target.
+Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, place nodes and the material result node clearly, normalize it through `MaterialSemanticCommandlet`, repair until normalization succeeds, then import the normalized DSL into the mapped `/Game` material target.
 
 ## When To Use
 
@@ -13,6 +13,7 @@ Use this skill for `MaterialSemanticBridge` workflows in this repository: analyz
 - editing an existing `.materialdsl` file
 - converting material notes, shader graph descriptions, screenshots, or look-dev requirements into Material DSL
 - checking whether a `MaterialExpression*` class, property, pin, material setting, or output is supported before generating DSL
+- setting graph layout metadata such as `graph.result_pos` to keep the Material Result node from overlapping generated nodes
 - repairing a DSL draft that is failing validation, import, export, or round-trip checks
 
 Do not use this skill for:
@@ -59,5 +60,6 @@ If a local reference is still not enough to disambiguate an exact property, pin,
 - Do not emit `MaterialExpressionParameter`; use concrete subclasses such as `MaterialExpressionScalarParameter`, `MaterialExpressionVectorParameter`, or texture parameter classes.
 - Use only properties and pins proven by `Mode=schema` or existing import/export behavior.
 - Prefer small import-safe graphs over speculative large graphs.
+- Use `set graph.result_pos "X,Y"` when the Material Result node needs an explicit graph editor position, especially when generated nodes would otherwise overlap it.
 - Omit defaults whenever possible so the file stays close to canonical export shape.
 - If a requested feature is unsupported, asset-dependent, or context-dependent, say so explicitly and propose the nearest supported fallback.

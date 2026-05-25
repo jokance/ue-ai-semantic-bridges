@@ -41,6 +41,7 @@ Turn the material plan into the smallest import-safe DSL draft that follows `pro
 - Use UE reflected property names exactly, including case.
 - Use bare asset paths only when accepted by existing DSL; full object references are also accepted when already known.
 - All generated graph DSL nodes must include `pos`. The importer does not auto-layout nodes, so missing `pos` values default to `0,0` and will overlap.
+- Use `set graph.result_pos "X,Y"` when you need to move the material result node away from expression nodes.
 - Lay out nodes left-to-right by data flow.
 - Keep same-column node vertical spacing at least `180`, preferably `220`.
 - Place common input nodes in the leftmost column.

@@ -51,8 +51,8 @@ When running on Windows or macOS for normal agent work, use the skill-local fixe
 
 The fixed launcher must be run with escalated execution outside the sandbox.
 
-- Windows launcher: `.agents/skills/ue-widget-creator/scripts/run_widgetsemantic_validate_windows.bat`
-- macOS launcher: `.agents/skills/ue-widget-creator/scripts/run_widgetsemantic_validate_mac.sh`
+- Windows launcher: `scripts/run_widgetsemantic_validate_windows.bat`
+- macOS launcher: `scripts/run_widgetsemantic_validate_mac.sh`
 - request file: `Saved/WidgetDSLTemp/widgetsemantic-request.json`
 
 Each launcher supports two modes:

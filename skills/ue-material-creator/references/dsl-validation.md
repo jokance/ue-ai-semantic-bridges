@@ -62,8 +62,8 @@ When running on Windows or macOS for normal agent work, use the skill-local fixe
 
 The fixed launcher must be run with escalated execution outside the sandbox.
 
-- Windows launcher: `.agents/skills/ue-material-creator/scripts/run_materialsemantic_validate_windows.bat`
-- macOS launcher: `.agents/skills/ue-material-creator/scripts/run_materialsemantic_validate_mac.sh`
+- Windows launcher: `scripts/run_materialsemantic_validate_windows.bat`
+- macOS launcher: `scripts/run_materialsemantic_validate_mac.sh`
 - request file: `Saved/MaterialDSLTemp/materialsemantic-request.json`
 
 Each launcher supports two modes of invocation:
@@ -72,6 +72,26 @@ Each launcher supports two modes of invocation:
 - fallback: explicit arguments; forwards directly to the lower-level platform wrapper for debugging
 
 For debugging or manual reproduction, each launcher also supports explicit arguments such as `--project`, `--engine`, `--input`, `--validate`, `--normalize`, and `--import`. Temporary files are written under `Saved/MaterialDSLTemp/` with fixed default names such as `materialsemantic-normalize.json/.log`, `materialsemantic-validate.json/.log`, and `materialsemantic-import.json/.log`.
+
+## Already-Running Editor Fallback
+
+If the commandlet path is blocked because this project already has a running Unreal Editor instance, do not close the editor just to run `UnrealEditor-Cmd`. Use the editor request bridge instead; it writes `Saved/MaterialSemanticBridge/request.json`, waits for the open editor to process it in-process, and supports the normal material workflow modes `normalize` and `import`.
+
+Windows examples:
+
+```bat
+scripts\request_materialsemantic_editor_windows.bat --mode normalize --input .ue_dsl\MaterialDSL\Materials\M_Test.materialdsl
+scripts\request_materialsemantic_editor_windows.bat --mode import --input .ue_dsl\MaterialDSL\Materials\M_Test.materialdsl --input-root .ue_dsl\MaterialDSL
+```
+
+macOS examples:
+
+```bash
+scripts/request_materialsemantic_editor_mac.sh --mode normalize --input .ue_dsl/MaterialDSL/Materials/M_Test.materialdsl
+scripts/request_materialsemantic_editor_mac.sh --mode import --input .ue_dsl/MaterialDSL/Materials/M_Test.materialdsl --input-root .ue_dsl/MaterialDSL
+```
+
+The same `request.json` file carries the status: `pending`, `running`, `completed`, or `failed`. Only one request may exist at a time; if the wrapper reports that `request.json` is pending or running, wait for the editor to finish or remove the stale file only after confirming the editor is not processing it.
 
 ## Issue Repair
 

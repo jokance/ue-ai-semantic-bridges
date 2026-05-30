@@ -1,6 +1,8 @@
 # DSL Validation, Normalization, and Import
 
-Normalize a generated `.materialdsl` by running the platform fixed launcher. For normal material workflow, use `normalize` first, repair until it succeeds, then use `import` after the normalized DSL is accepted.
+Normalize a generated `.materialdsl` by running the platform fixed launcher. For normal material creation or edit workflows, use `normalize` first, repair until it succeeds, then use `import` after the normalized DSL is accepted.
+
+If the user explicitly asks only to `import`, `reimport`, `directly import`, or `导入` an existing `.materialdsl` file, do not run the normalize flow first. Run `mode: "import"` directly, unless the user also asks to validate, normalize, repair, or stabilize the DSL.
 
 ## Flow
 

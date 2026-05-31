@@ -4,6 +4,8 @@
 
 - DSL file names should start with `M_` for materials.
   Example: `M_StylizedWater.materialdsl`
+- DSL file names should start with `MI_` for material instances.
+  Example: `MI_StylizedWater_Wet.materialdsl`
 - Place all AI-generated material DSL files under `.ue_dsl/MaterialDSL/Materials/<feature-or-folder>/`.
 - Use an existing subdirectory when it clearly matches the material's area or feature.
 - The plugin root remains `.ue_dsl/MaterialDSL/`, and DSL files may also exist directly under that root or other subdirectories.
@@ -14,6 +16,7 @@
 ## Naming
 
 - Material asset names should use English PascalCase after the `M_` prefix.
+- Material instance asset names should use English PascalCase after the `MI_` prefix.
 - Node ids should be short, stable, and readable.
   Examples: `baseColor`, `roughness`, `normalTex`, `mulTint`
 - Parameter names should be user-facing PascalCase.

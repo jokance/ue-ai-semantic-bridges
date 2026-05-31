@@ -8,7 +8,7 @@ If the user explicitly asks only to `import`, `reimport`, `directly import`, or 
 
 1. Take the `.materialdsl` file from `dsl-generation`.
 2. Write `Saved/MaterialDSLTemp/materialsemantic-request.json` with `mode` set to `normalize`, then run the platform fixed launcher with no arguments.
-3. Always provide `project`, `engine`, and `input` in the request file. These fields are required.
+3. Always provide `project` and `input` in the request file. Provide `engine` only when you need to override automatic engine resolution.
 4. The launcher uses the project-local `.ue_dsl/MaterialDSL` root for import target mapping.
 5. If normalize mode fails validation or temporary import/export, keep the file unchanged and send the issues from the JSON report back to `dsl-generation`.
 6. If normalize mode succeeds, keep the canonical DSL export and let it overwrite the original file.
@@ -25,12 +25,12 @@ Request file path:
 Minimal request file fields:
 
 - `project`: absolute `.uproject` path
-- `engine`: absolute Unreal Engine root path
 - `input`: absolute or project-relative `.materialdsl` path
 - `mode`: `validate`, `normalize`, or `import`
 
 Optional request file fields:
 
+- `engine`: absolute Unreal Engine root path; if omitted, the launcher resolves from the project `EngineAssociation`, then falls back to `UE_ENGINE_ROOT`
 - `report`: optional JSON report path
 - `build`: `true` to build before running
 
@@ -39,7 +39,6 @@ Normalize example:
 ```json
 {
   "project": "<Project>/SilverGame.uproject",
-  "engine": "<EngineRoot>",
   "input": ".ue_dsl/MaterialDSL/Materials/M_Test.materialdsl",
   "mode": "normalize"
 }
@@ -50,7 +49,6 @@ Import example:
 ```json
 {
   "project": "<Project>/SilverGame.uproject",
-  "engine": "<EngineRoot>",
   "input": ".ue_dsl/MaterialDSL/Materials/M_Test.materialdsl",
   "mode": "import"
 }
@@ -62,7 +60,7 @@ Use `mode: "validate"` only for exceptional read-only debugging where canonical 
 
 When running on Windows or macOS for normal agent work, use the skill-local fixed launcher instead of calling ad hoc command variants:
 
-The fixed launcher must be run with escalated execution outside the sandbox.
+Run the fixed launcher from the project workspace. If the host agent requires approval to launch Unreal Editor commandlets, use that host's normal approval path.
 
 - Windows launcher: `scripts/run_materialsemantic_validate_windows.bat`
 - macOS launcher: `scripts/run_materialsemantic_validate_mac.sh`
@@ -70,14 +68,14 @@ The fixed launcher must be run with escalated execution outside the sandbox.
 
 Each launcher supports two modes of invocation:
 
-- preferred: no arguments; reads the request JSON and keeps the escalated command fixed
-- fallback: explicit arguments; forwards directly to the lower-level platform wrapper for debugging
+- preferred: no arguments; reads the request JSON and keeps the command shape fixed
+- fallback: explicit arguments; invokes `UnrealEditor-Cmd` with equivalent commandlet arguments for debugging
 
-For debugging or manual reproduction, each launcher also supports explicit arguments such as `--project`, `--engine`, `--input`, `--validate`, `--normalize`, and `--import`. Temporary files are written under `Saved/MaterialDSLTemp/` with fixed default names such as `materialsemantic-normalize.json/.log`, `materialsemantic-validate.json/.log`, and `materialsemantic-import.json/.log`.
+For debugging or manual reproduction, each launcher also supports explicit arguments such as `--project`, `--engine`, `--input`, `--validate`, `--normalize`, and `--import`. If `--engine` or request-field `engine` is omitted, the launcher resolves the engine from the project `EngineAssociation` first, then falls back to `UE_ENGINE_ROOT` and platform-specific local engine probes. Relative `--input` values are resolved under the project root. Temporary files are written under `Saved/MaterialDSLTemp/` with fixed default names such as `materialsemantic-normalize.json/.log`, `materialsemantic-validate.json/.log`, and `materialsemantic-import.json/.log`.
 
 ## Already-Running Editor Fallback
 
-If the commandlet path is blocked because this project already has a running Unreal Editor instance, do not close the editor just to run `UnrealEditor-Cmd`. Use the editor request bridge instead; it writes `Saved/MaterialSemanticBridge/request.json`, waits for the open editor to process it in-process, and supports the normal material workflow modes `normalize` and `import`.
+If the commandlet path is blocked because this project already has a running Unreal Editor instance, do not close the editor just to run `UnrealEditor-Cmd`. Use the editor request bridge instead; it writes `Saved/MaterialSemanticBridge/request.json`, waits for the open editor to process it in-process, and supports `import-root`, `normalize`, and `import`. The normal single-file material workflow uses `normalize` and `import`.
 
 Windows examples:
 
@@ -120,4 +118,4 @@ The same `request.json` file carries the status: `pending`, `running`, `complete
 - `0`: selected mode succeeded
 - `1`: validation, normalization, or import failed; regenerate DSL or fix import input
 - `2`: argument, I/O, or environment error
-- `124`: launcher timeout
+- `124`: editor request wrapper timeout, or macOS commandlet launcher watchdog timeout

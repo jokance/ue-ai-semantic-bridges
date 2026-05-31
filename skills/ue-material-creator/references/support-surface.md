@@ -31,8 +31,8 @@ Treat commandlet output from the current worktree as more authoritative than thi
 Use commandlet discovery instead of guessing:
 
 - `Mode=schema-list`: supported expression classes
-- `Mode=schema -Class=<MaterialExpressionClassName>`: properties, input pins, output pins, dynamic pin notes
-- `Mode=material-schema`: material settings and material outputs
+- `Mode=schema -Class=<MaterialExpressionClassName>`: properties, default input pins, output pins, and dynamic pin flags
+- `Mode=material-schema`: material settings and material output names. Use `outputs[].name` for targets; the canonical DSL line stays `output <MaterialOutputName> <sourceNode>.<sourcePin>`.
 - `Mode=compatibility -ConnectSubjectOutput=true`: broad import smoke
 
 ## Common Safe Classes
@@ -89,13 +89,15 @@ Use `Mode=material-schema` for exact values. Common settings include:
 - `material.shading_model`
 - `material.two_sided`
 - `material.opacity_mask_clip_value`
+- `material.translucency_lighting_mode`
 - `graph.result_pos`
 
 ## Material Outputs
 
-Use `Mode=material-schema` for the full list. Common outputs include:
+Use `Mode=material-schema` for the current full list. Implemented outputs include:
 
 - `BaseColor`
+- `Anisotropy`
 - `Metallic`
 - `Specular`
 - `Roughness`
@@ -103,13 +105,29 @@ Use `Mode=material-schema` for the full list. Common outputs include:
 - `Opacity`
 - `OpacityMask`
 - `Normal`
+- `Tangent`
 - `AmbientOcclusion`
+- `SubsurfaceColor`
+- `CustomData0`
+- `CustomData1`
+- `ClearCoat`
+- `ClearCoatRoughness`
+- `Refraction`
+- `PixelDepthOffset`
 - `WorldPositionOffset`
 - `MaterialAttributes`
+- `BentNormal`
+- `ClearCoatBottomNormal`
+- `ThinTranslucentTransmittanceColor`
+- `ThinTranslucentSurfaceCoverage`
+- `SingleLayerWaterScatteringCoefficients`
+- `SingleLayerWaterAbsorptionCoefficients`
+- `SingleLayerWaterPhaseG`
+- `SingleLayerWaterColorScaleBehindWater`
 
 ## Context-Dependent Nodes
 
 - `MaterialExpressionNamedRerouteUsage` needs a matching `MaterialExpressionNamedRerouteDeclaration` with the same `DeclarationGuid`/`VariableGuid`.
 - `MaterialExpressionMaterialFunctionCall` usually needs `MaterialFunction` set to a valid function asset.
 - Texture, collection, font, sparse volume texture, runtime virtual texture, and material function properties need valid asset paths.
-- Dynamic pin classes such as custom, switch, convert, function call, material attributes, and custom output classes should be checked with `Mode=schema` after setting dynamic properties.
+- Dynamic pin classes such as custom, switch, convert, function call, material attributes, and custom output classes are reported by `Mode=schema` as property-driven. Exact generated pin names come from the node properties, a normalized/exported graph, or local tests.

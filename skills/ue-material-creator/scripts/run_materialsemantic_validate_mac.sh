@@ -3,7 +3,23 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+
+find_project_root() {
+  local dir="$1"
+  while [[ "$dir" != "/" ]]; do
+    if compgen -G "$dir/*.uproject" >/dev/null; then
+      printf '%s' "$dir"
+      return 0
+    fi
+    dir="$(dirname "$dir")"
+  done
+  return 1
+}
+
+REPO_ROOT="$(find_project_root "$PWD" || find_project_root "$SCRIPT_DIR" || true)"
+if [[ -z "$REPO_ROOT" ]]; then
+  REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
+fi
 DEFAULT_REQUEST_PATH="$REPO_ROOT/Saved/MaterialDSLTemp/materialsemantic-request.json"
 
 PROJECT_FILE=""
@@ -25,17 +41,17 @@ Usage:
 
 No-argument mode:
   Reads request settings from Saved/MaterialDSLTemp/materialsemantic-request.json.
-  This is the preferred mode for fixed-command approval reuse.
+  This is the preferred mode for stable command invocation.
 
 Options:
   --project <path>      Required .uproject path
-  --input <path>        Absolute or relative .materialdsl input path
-  --report <path>       Optional commandlet report path
+  --input <path>        Absolute or project-relative .materialdsl input path
+  --report <path>       Optional commandlet report path; relative paths resolve under the project root
   --validate            Validate only (default if no mode is passed)
   --normalize           Normalize the input file in place after validation/import/export round-trip
   --import              Import the input file into its mapped /Game target
   --build               Build the project Editor target before running the selected mode
-  --engine <path>       Required Unreal Engine root path
+  --engine <path>       Unreal Engine root path; defaults to project EngineAssociation, then UE_ENGINE_ROOT
   --help                Show this help
 
 Modes are mutually exclusive: --validate, --normalize, and --import.
@@ -87,6 +103,24 @@ resolve_optional_path() {
   mkdir -p "$input_dir"
   input_dir="$(cd "$input_dir" && pwd)"
   printf '%s/%s\n' "$input_dir" "$(basename "$input_path")"
+}
+
+resolve_project_file_path() {
+  local input_path="$1"
+  if [[ "$input_path" = /* ]]; then
+    resolve_file_path "$input_path"
+  else
+    resolve_file_path "$PROJECT_ROOT/$input_path"
+  fi
+}
+
+resolve_project_optional_path() {
+  local input_path="$1"
+  if [[ "$input_path" = /* ]]; then
+    resolve_optional_path "$input_path"
+  else
+    resolve_optional_path "$PROJECT_ROOT/$input_path"
+  fi
 }
 
 load_request_file() {
@@ -162,6 +196,59 @@ PY
   done
 }
 
+resolve_engine_root_from_project() {
+  local search_dir="$PROJECT_ROOT"
+  local parent_dir
+  local engine_association
+  local candidate
+  local candidates=()
+
+  engine_association="$(grep -Eo '"EngineAssociation"[[:space:]]*:[[:space:]]*"[^"]*"' "$PROJECT_FILE" | head -n 1 | sed -E 's/.*:[[:space:]]*"([^"]*)"/\1/')"
+  if [[ -n "$engine_association" ]]; then
+    if [[ "$engine_association" = /* ]]; then
+      candidates+=("$engine_association")
+    fi
+
+    if [[ "$engine_association" =~ ^[0-9]+([.][0-9]+)?$ ]]; then
+      candidates+=(
+        "/Users/Shared/Epic Games/UE_${engine_association}"
+        "/Users/Shared/EpicGames/UE_${engine_association}"
+        "/Users/Shared/UnrealEngine/${engine_association}"
+        "/Applications/Epic Games/UE_${engine_association}"
+        "$HOME/Documents/Projects/UE_${engine_association}"
+      )
+    fi
+  fi
+
+  for candidate in "${candidates[@]}"; do
+    if [[ -x "$candidate/Engine/Build/BatchFiles/Mac/Build.sh" ]]; then
+      printf '%s\n' "$candidate"
+      return 0
+    fi
+  done
+
+  if [[ -n "${UE_ENGINE_ROOT:-}" && -x "$UE_ENGINE_ROOT/Engine/Build/BatchFiles/Mac/Build.sh" ]]; then
+    printf '%s\n' "$UE_ENGINE_ROOT"
+    return 0
+  fi
+
+  while true; do
+    if [[ -x "$search_dir/Engine/Build/BatchFiles/Mac/Build.sh" ]]; then
+      printf '%s\n' "$search_dir"
+      return 0
+    fi
+
+    parent_dir="$(dirname "$search_dir")"
+    if [[ "$parent_dir" == "$search_dir" ]]; then
+      break
+    fi
+
+    search_dir="$parent_dir"
+  done
+
+  return 1
+}
+
 if [[ $# -eq 0 ]]; then
   load_request_file
 fi
@@ -235,9 +322,11 @@ PROJECT_NAME="$(basename "$PROJECT_FILE" .uproject)"
 EDITOR_TARGET="${PROJECT_NAME}Editor"
 
 if [[ -z "$ENGINE_ROOT" ]]; then
-  echo "Missing required --engine argument or request field." >&2
-  usage >&2
-  exit 2
+  if ! ENGINE_ROOT="$(resolve_engine_root_from_project)"; then
+    echo "Failed to resolve Unreal Engine root from project: $PROJECT_FILE" >&2
+    echo "Pass --engine <path> explicitly or set UE_ENGINE_ROOT." >&2
+    exit 2
+  fi
 fi
 
 BUILD_SCRIPT="${ENGINE_ROOT}/Engine/Build/BatchFiles/Mac/Build.sh"
@@ -253,7 +342,7 @@ if [[ ! -x "$EDITOR_CMD" ]]; then
   exit 2
 fi
 
-INPUT_PATH="$(resolve_file_path "$INPUT_PATH")"
+INPUT_PATH="$(resolve_project_file_path "$INPUT_PATH")"
 if [[ ! -f "$INPUT_PATH" ]]; then
   echo "Input DSL file not found: $INPUT_PATH" >&2
   exit 2
@@ -267,7 +356,7 @@ mkdir -p "$TEMP_OUTPUT_DIR"
 if [[ -z "$REPORT_PATH" ]]; then
   REPORT_PATH="$TEMP_OUTPUT_DIR/materialsemantic-${MODE}.json"
 fi
-REPORT_PATH="$(resolve_optional_path "$REPORT_PATH")"
+REPORT_PATH="$(resolve_project_optional_path "$REPORT_PATH")"
 LOG_PATH="$TEMP_OUTPUT_DIR/materialsemantic-${MODE}.log"
 
 if [[ "$BUILD_BEFORE_RUN" == "1" ]]; then

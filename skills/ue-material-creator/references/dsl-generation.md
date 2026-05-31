@@ -30,7 +30,7 @@ Turn the material plan into the smallest import-safe DSL draft that follows `pro
 ## Lookup Order
 
 1. Check `spec.md` for syntax and canonical shape.
-2. Check `support-surface.md` for class, property, pin, and material-output discovery commands.
+2. Check `support-surface.md` for class, property, pin, and material-output discovery commands. For material outputs, use `Mode=material-schema` for target names and `spec.md` for the canonical output-line syntax.
 3. Check `project-rules.md` for file naming and output placement.
 4. Check `examples.md` for a known-good graph shape.
 5. If the exact key or pin is still unclear, inspect plugin implementation or tests.
@@ -40,6 +40,8 @@ Turn the material plan into the smallest import-safe DSL draft that follows `pro
 - Use quoted values for `set` values.
 - Use UE reflected property names exactly, including case.
 - Use bare asset paths only when accepted by existing DSL; full object references are also accepted when already known.
+- Use `output <MaterialOutput> <sourceNode>.<sourcePin>` for material outputs. `Mode=material-schema` output names are authoritative, but arrow-style output examples are not DSL input syntax.
+- For property-driven dynamic pins, `Mode=schema` only tells you that dynamic pins exist. Use the configured property values, an exported/normalized graph, or local tests to determine exact dynamic pin names.
 - All generated graph DSL nodes must include `pos`. The importer does not auto-layout nodes, so missing `pos` values default to `0,0` and will overlap.
 - Use `set graph.result_pos "X,Y"` when you need to move the material result node away from expression nodes.
 - Lay out nodes left-to-right by data flow.

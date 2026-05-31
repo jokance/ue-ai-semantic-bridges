@@ -31,6 +31,7 @@ set material.domain "surface"
 set material.blend_mode "opaque"
 set material.shading_model "default_lit"
 set material.two_sided "false"
+set material.translucency_lighting_mode "surface_per_pixel_lighting"
 ```
 
 Graph layout setting:
@@ -62,6 +63,8 @@ Material output:
 ```text
 output <MaterialOutputName> <sourceNode>.<sourcePin>
 ```
+
+This is the canonical parser/export form. `Mode=material-schema` reports supported output names in `outputs[].name`; use those names here and do not generate arrow-style output statements.
 
 ## Schema 1 Material Instance Lines
 
@@ -114,7 +117,7 @@ Common source pins:
 Common target pins:
 
 - reflected input names, such as `input0`, `input1`, `coordinates`, `texture_object`, `normal`
-- named dynamic pins reported by `Mode=schema`
+- named dynamic pins from property values or a normalized/exported graph. `Mode=schema` reports default pins and whether the class is property-driven; it does not apply per-node dynamic properties.
 
 ## Values
 
@@ -128,4 +131,4 @@ set param.ParameterName "Tint"
 set time.bIgnorePause "True"
 ```
 
-Use commandlet schema when unsure about enum strings, struct text format, object path format, or property names.
+Use commandlet schema when unsure about enum strings, struct text format, object path format, or property names. For material outputs, use `Mode=material-schema` for target names and keep the canonical `output <MaterialOutputName> <sourceNode>.<sourcePin>` syntax.

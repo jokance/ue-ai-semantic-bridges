@@ -58,7 +58,7 @@ If a local reference is still not enough to disambiguate an exact property, pin,
 - Do not use short aliases such as `Constant3Vector`, `VectorParameter`, or `TextureObject`.
 - Do not use full class paths unless editing an existing file that already uses them; short real class names are preferred.
 - Do not emit `MaterialExpressionParameter`; use concrete subclasses such as `MaterialExpressionScalarParameter`, `MaterialExpressionVectorParameter`, or texture parameter classes.
-- Use only properties and pins proven by `Mode=schema` or existing import/export behavior.
+- Use only properties and pins proven by `Mode=schema` or existing import/export behavior. For property-driven dynamic pins, `Mode=schema` only flags that pins are dynamic; use the relevant property values, a normalized/exported graph, or local tests for exact pin names.
 - Prefer small import-safe graphs over speculative large graphs.
 - Use `set graph.result_pos "X,Y"` when the Material Result node needs an explicit graph editor position, especially when generated nodes would otherwise overlap it.
 - Omit defaults whenever possible so the file stays close to canonical export shape.

@@ -96,6 +96,26 @@ Import example:
 
 For debugging or manual reproduction, each launcher also supports explicit arguments such as `--input`, `--validate`, `--preview`, and `--import`. Temporary files are written under `Saved/WidgetDSLTemp/` with fixed names: `widgetsemantic-validate.json/.log` for both validate and preview runs, and `widgetsemantic-import.json/.log` for import runs.
 
+## Running Editor Fallback
+
+If the commandlet path is blocked because this project already has a running Unreal Editor instance, use the editor request bridge instead of closing the editor. The plugin watches `Saved/WidgetSemanticBridge/request.json` every 1.8 seconds, processes one JSON request in the open editor, and writes the result back to the same file.
+
+Windows:
+
+```bat
+scripts\request_widgetsemantic_editor_windows.bat --mode preview --input .ue_dsl\WidgetDSL\UI\WBP_MainMenu.widgetdsl --preview-size 1280x720
+scripts\request_widgetsemantic_editor_windows.bat --mode import --input .ue_dsl\WidgetDSL\UI\WBP_MainMenu.widgetdsl --input-root .ue_dsl\WidgetDSL
+```
+
+macOS:
+
+```bash
+scripts/request_widgetsemantic_editor_mac.sh --mode preview --input .ue_dsl/WidgetDSL/UI/WBP_MainMenu.widgetdsl --preview-size 1280x720
+scripts/request_widgetsemantic_editor_mac.sh --mode import --input .ue_dsl/WidgetDSL/UI/WBP_MainMenu.widgetdsl --input-root .ue_dsl/WidgetDSL
+```
+
+Supported request modes are `validate`, `preview`, `stabilize`, `import`, and `import-root`. The same `request.json` file carries the status: `pending`, `running`, `completed`, or `failed`. Only one request may exist at a time; if the wrapper reports that `request.json` is pending or running, wait for the editor to finish or remove the stale file only after confirming the editor is not processing it.
+
 ## Exit Codes
 
 - `0`: selected mode succeeded

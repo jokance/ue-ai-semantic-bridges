@@ -27,9 +27,33 @@ Do not use this skill for:
 
 Always follow this loop:
 
-1. Analyze the material. Read [references/material-analysis.md](references/material-analysis.md).
-2. Generate or edit DSL. Read [references/dsl-generation.md](references/dsl-generation.md).
-3. Normalize, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
+1. Analyze the material from a production technical-art perspective. Read [references/material-analysis.md](references/material-analysis.md).
+2. Satisfy the requested visual read and production quality bar before simplifying the graph.
+3. Generate or edit concise, parameterized DSL. Read [references/dsl-generation.md](references/dsl-generation.md).
+4. Normalize, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
+
+## Technical Art Quality Bar
+
+Prioritize in this order:
+
+1. Correct visual read.
+2. Production reliability.
+3. Art-directable controls.
+4. Reasonable performance.
+5. Graph simplicity.
+
+Simplicity is a constraint, not the primary goal. Do not optimize for node count alone. If an effect needs extra structure for readability, falloff, contrast, masking, or art direction, add it and explain why.
+
+A concise material is acceptable only when it still has:
+
+- a clear first-read visual feature
+- controlled contrast
+- appropriate falloff or transition
+- enough parameters for art direction
+- no misleading renderer assumptions
+- no flat placeholder look unless the user explicitly asks for one
+
+Before generating DSL, decide where the material will be used, what must read first, what performance budget is appropriate, what Unreal rendering limitations affect the request, and what fallback gives the closest reliable result.
 
 ## Authoritative Sources
 

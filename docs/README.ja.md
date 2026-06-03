@@ -20,15 +20,10 @@ AI Agent が次の作業を行うために使います。
 
 この skill はエディタでの制作ワークフロー向けであり、ランタイムロジック生成向けではありません。
 
-Showcase:
+- [ショーケース](https://www.youtube.com/watch?v=OsDRfoziQg8)
+- [ガイド](ue-widget-creator.ja.md)
 
-- [YouTube Video](https://www.youtube.com/watch?v=OsDRfoziQg8)
-
-Documentation:
-
-- [Guide (日本語)](ue-widget-creator.ja.md)
-
-### `ue-material-creator`
+### `ue-material-creator`（近日公開予定）
 
 `ue-material-creator` は `MaterialSemanticBridge` 用の skill ワークフローです。
 
@@ -44,6 +39,8 @@ AI Agent が次の作業を行うために使います。
 
 この skill はエディタでの制作ワークフロー向けであり、ランタイムのマテリアルインスタンスパラメータ変更や無関係な Unreal C++ 作業向けではありません。
 
-Documentation:
+- [ガイド](ue-material-creator.ja.md)
 
-- [Guide (日本語)](ue-material-creator.ja.md)
+## コミュニティ
+
+- [Discord](https://discord.gg/gbbPGeVXw9)

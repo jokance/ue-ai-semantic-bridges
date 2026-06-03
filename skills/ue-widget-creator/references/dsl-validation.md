@@ -1,6 +1,6 @@
 # DSL Validation
 
-Validate a generated `.widgetdsl` by running the platform fixed launcher. For normal review workflow, use `preview` first, then `import` after the preview is accepted.
+Validate a generated `.widgetdsl` by running the platform fixed launcher. For normal review workflow, use `preview` first, then `import` after the preview is accepted. For import-only requests, skip `preview` and run `import` directly.
 
 For files under `.ue_dsl/WidgetDSL/<relative_path>.widgetdsl`, the review image path is canonicalized to: `Saved/WidgetDSLPreview/<relative_path>.png`
 

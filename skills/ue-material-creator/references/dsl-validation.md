@@ -57,7 +57,7 @@ Preview capture options:
 
 - By default, the commandlet chooses one frame for static materials and up to 9 interval frames for dynamic materials.
 - By default, dynamic previews skip the first two warmup render frames before saving review frames.
-- The default dynamic frame interval is `0.5` seconds.
+- The default dynamic frame interval is `0.1` seconds, which keeps fast pulses, panners, and short animation cycles from being skipped between review frames.
 - If the local launcher or editor bridge supports request overrides, use `preview_frame_count` for saved review frames, `preview_frame_interval_seconds` for spacing between saved frames, and `preview_skipped_frame_count` for discarded warmup frames.
 - Clamp requested `preview_frame_count` to `1-9`.
 - Keep requested `preview_frame_interval_seconds` in a practical range such as `0.033-10.0`.

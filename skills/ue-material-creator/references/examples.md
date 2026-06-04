@@ -88,11 +88,25 @@ material "M_NamedRerouteExample"
 
 ```text
 material "M_MaterialAttributes"
+  node base MaterialExpressionConstant3Vector
+    Constant "(R=0.2,G=0.35,B=0.9,A=1)"
+    pos "-420,-180"
+
+  node rough MaterialExpressionConstant
+    R "0.6"
+    pos "-420,0"
+
+  node metal MaterialExpressionConstant
+    R "0.0"
+    pos "-420,180"
+
   node attrs MaterialExpressionMakeMaterialAttributes
-    BaseColor "(R=0.2,G=0.35,B=0.9,A=1)"
-    Roughness "0.6"
-    Metallic "0.0"
     pos "180,0"
+
+  connections
+    base.rgb -> attrs.base_color
+    rough.output0 -> attrs.roughness
+    metal.output0 -> attrs.metallic
 
   outputs
     MaterialAttributes attrs.output0

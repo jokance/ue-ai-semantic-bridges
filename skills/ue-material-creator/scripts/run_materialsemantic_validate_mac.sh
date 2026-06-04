@@ -378,6 +378,11 @@ elif [[ "$MODE" == "import" ]]; then
   COMMANDLET_MODE="import"
 fi
 
+RHI_SWITCH="-NullRHI"
+if [[ "$COMMANDLET_MODE" == "normalize" ]]; then
+  RHI_SWITCH="-AllowCommandletRendering"
+fi
+
 COMMANDLET_ARGS=(
   "$PROJECT_FILE"
   -run=MaterialSemanticCommandlet
@@ -388,7 +393,7 @@ COMMANDLET_ARGS=(
   -Format=json
   -Unattended
   -nop4
-  -NullRHI
+  "$RHI_SWITCH"
   -nosplash
   -NoEpicPortal
   -stdout

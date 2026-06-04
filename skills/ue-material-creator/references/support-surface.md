@@ -32,7 +32,7 @@ Use commandlet discovery instead of guessing:
 
 - `Mode=schema-list`: supported expression classes
 - `Mode=schema -Class=<MaterialExpressionClassName>`: properties, default input pins, output pins, and dynamic pin flags
-- `Mode=material-schema`: material settings and material output names. Use `outputs[].name` for targets; the canonical DSL line stays `output <MaterialOutputName> <sourceNode>.<sourcePin>`.
+- `Mode=material-schema`: material settings and material output names. Use `outputs[].name` for targets; the canonical DSL form is an `outputs` block entry: `<MaterialOutputName> <sourceNode>.<sourcePin>`.
 - `Mode=compatibility -ConnectSubjectOutput=true`: broad import smoke
 
 ## Common Safe Classes
@@ -90,7 +90,7 @@ Use `Mode=material-schema` for exact values. Common settings include:
 - `material.two_sided`
 - `material.opacity_mask_clip_value`
 - `material.translucency_lighting_mode`
-- `graph.result_pos`
+- `graph` block entry `result_pos`
 
 ## Material Outputs
 

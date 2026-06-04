@@ -284,11 +284,13 @@ exit /b 0
 set "COMMANDLET_MODE=validate"
 if /I "%MODE%"=="normalize" set "COMMANDLET_MODE=normalize"
 if /I "%MODE%"=="import" set "COMMANDLET_MODE=import"
+set "RHI_SWITCH=-NullRHI"
+if /I "%COMMANDLET_MODE%"=="normalize" set "RHI_SWITCH=-AllowCommandletRendering"
 
 if exist "%REPORT_PATH%" del /q "%REPORT_PATH%" >nul 2>nul
 if exist "%LOG_PATH%" del /q "%LOG_PATH%" >nul 2>nul
 
-"%EDITOR_BINARY%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet "-Mode=%COMMANDLET_MODE%" "-Input=%INPUT_PATH%" "-InputRoot=%INPUT_ROOT%" "-Report=%REPORT_PATH%" -Format=json -Unattended -nop4 -NullRHI -nosplash -NoEpicPortal -stdout -FullStdOutLogOutput "-abslog=%LOG_PATH%"
+"%EDITOR_BINARY%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet "-Mode=%COMMANDLET_MODE%" "-Input=%INPUT_PATH%" "-InputRoot=%INPUT_ROOT%" "-Report=%REPORT_PATH%" -Format=json -Unattended -nop4 %RHI_SWITCH% -nosplash -NoEpicPortal -stdout -FullStdOutLogOutput "-abslog=%LOG_PATH%"
 set "COMMANDLET_STATUS=%ERRORLEVEL%"
 
 if not exist "%REPORT_PATH%" (

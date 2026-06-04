@@ -5,7 +5,7 @@ description: Use when analyzing Unreal material requirements, generating or edit
 
 # UE Material Creator
 
-Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, place nodes and the material result node clearly, normalize it through `MaterialSemanticCommandlet`, repair until normalization succeeds, then import the normalized DSL into the mapped `/Game` material target.
+Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, place nodes and the material result node clearly, normalize it through `MaterialSemanticCommandlet`, review the exported material preview image or dynamic preview frames when available, repair until normalization succeeds and preview review has no blocking visual mismatch, then import the accepted DSL into the mapped `/Game` material target.
 
 ## When To Use
 
@@ -14,7 +14,7 @@ Use this skill for `MaterialSemanticBridge` workflows in this repository: analyz
 - converting material notes, shader graph descriptions, screenshots, or look-dev requirements into Material DSL
 - checking whether a `MaterialExpression*` class, property, pin, material setting, or output is supported before generating DSL
 - setting graph layout metadata such as `graph.result_pos` to keep the Material Result node from overlapping generated nodes
-- repairing a DSL draft that is failing validation, import, export, or round-trip checks
+- repairing a DSL draft that is failing validation, preview review, import, export, or round-trip checks
 
 Do not use this skill for:
 
@@ -30,7 +30,7 @@ Always follow this loop:
 1. Analyze the material from a production technical-art perspective. Read [references/material-analysis.md](references/material-analysis.md).
 2. Satisfy the requested visual read and production quality bar before simplifying the graph.
 3. Generate or edit concise, parameterized DSL. Read [references/dsl-generation.md](references/dsl-generation.md).
-4. Normalize, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
+4. Normalize, review the exported preview image or all emitted dynamic preview frames, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
 
 ## Technical Art Quality Bar
 
@@ -84,6 +84,18 @@ If a local reference is still not enough to disambiguate an exact property, pin,
 - Do not emit `MaterialExpressionParameter`; use concrete subclasses such as `MaterialExpressionScalarParameter`, `MaterialExpressionVectorParameter`, or texture parameter classes.
 - Use only properties and pins proven by `Mode=schema` or existing import/export behavior. For property-driven dynamic pins, `Mode=schema` only flags that pins are dynamic; use the relevant property values, a normalized/exported graph, or local tests for exact pin names.
 - Prefer small import-safe graphs over speculative large graphs.
-- Use `set graph.result_pos "X,Y"` when the Material Result node needs an explicit graph editor position, especially when generated nodes would otherwise overlap it.
+- Use a `graph` block with `result_pos "X,Y"` when the Material Result node needs an explicit graph editor position, especially when generated nodes would otherwise overlap it.
 - Omit defaults whenever possible so the file stays close to canonical export shape.
 - If a requested feature is unsupported, asset-dependent, or context-dependent, say so explicitly and propose the nearest supported fallback.
+
+## Final User Handoff
+
+When generated or modified materials require any manual user action after import, explicitly call that out in the final response. Include concrete actions such as:
+
+- replace placeholder textures or assign project-specific texture assets
+- set or tune material instance parameters
+- connect runtime parameter updates from Blueprint, Niagara, Sequencer, or gameplay code
+- review unavailable or failed preview images manually in Unreal Editor
+- verify a fallback used because a requested feature was unsupported or asset-dependent
+
+Do not bury required user actions in implementation details. Put them in a short final checklist so the user knows what remains outside the DSL/import workflow.

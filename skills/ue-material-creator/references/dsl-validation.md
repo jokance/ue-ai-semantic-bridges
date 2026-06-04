@@ -4,7 +4,7 @@ Normalize a generated `.materialdsl` by running the platform fixed launcher. For
 
 If the user explicitly asks only to `import`, `reimport`, `directly import`, or `导入` an existing `.materialdsl` file, do not run the normalize flow first. Run `mode: "import"` directly, unless the user also asks to validate, normalize, repair, or stabilize the DSL.
 
-For files under `.ue_dsl/MaterialDSL/<relative_path>.materialdsl`, the review image path is canonicalized to `Saved/MaterialDSLPreview/<relative_path>.png` for static materials. Dynamic materials may emit numbered frames such as `Saved/MaterialDSLPreview/<relative_path>_01.png` through `_09.png` after skipping the first two warmup intervals. If the JSON report includes `preview_images`, read every path in that array. If only `preview_image` is present, read that path. Preview export attempts a real Unreal preview scene render to a render target first. If that path is unavailable, produces an unusable background/black capture, or produces dynamic frames with no meaningful visual difference, the commandlet falls back to thumbnail rendering and then to a semantic preview approximation so normalize can still continue.
+For files under `.ue_dsl/MaterialDSL/<relative_path>.materialdsl`, the review image path is canonicalized to `Saved/MaterialDSLPreview/<relative_path>.png` for static materials. Dynamic materials may emit numbered frames such as `Saved/MaterialDSLPreview/<relative_path>_01.png` through `_09.png` after skipping the first two warmup intervals. Dynamic reports may also include `preview_contact_sheet`, a stitched overview image for quick review of all emitted frames. If `preview_contact_sheet` is present, read it first, then read the individual paths in `preview_images` when any frame needs closer inspection. If only `preview_image` is present, read that path. Preview export attempts a real Unreal preview scene render to a render target first. If that path is unavailable, produces an unusable background/black capture, or produces dynamic frames with no meaningful visual difference, the commandlet falls back to thumbnail rendering and then to a semantic preview approximation so normalize can still continue.
 
 ## Flow
 
@@ -14,7 +14,7 @@ For files under `.ue_dsl/MaterialDSL/<relative_path>.materialdsl`, the review im
 4. The launcher uses the project-local `.ue_dsl/MaterialDSL` root for import target mapping.
 5. If normalize mode fails validation or temporary import/export, keep the file unchanged and send the issues from the JSON report back to `dsl-generation`.
 6. If normalize mode succeeds, check whether material preview image output was generated as part of the normalize report.
-7. If preview frames were generated, read every generated preview frame from `preview_images`; for older reports, read `preview_image`. Dynamic materials can emit up to 9 interval frames after skipping two warmup frames.
+7. If `preview_contact_sheet` is present, read it first as the dynamic overview. If preview frames were generated, read every generated preview frame from `preview_images` when detailed review is needed; for older reports, read `preview_image`. Dynamic materials can emit up to 9 interval frames after skipping two warmup frames.
 8. If previews are available, review all generated images against the requested material read by using the `Preview Review Checklist` below.
 9. If the preview does not satisfy the request, reject the file and send visual feedback back to `dsl-generation`.
 10. If preview generation failed but normalize succeeded, record that visual review was unavailable and continue; missing previews must not block the later `import`.
@@ -150,6 +150,7 @@ The same `request.json` file carries the status: `pending`, `running`, `complete
 
 - Single-file normalization returns `normalized: true` and `valid: true`.
 - If `preview_generated: true`, the normalize report includes at least one path in `preview_images`, every preview image exists on disk, and every preview image was read.
+- For dynamic materials, if `preview_contact_sheet` is non-empty, it exists on disk and was read before or alongside individual frame review.
 - If `preview_generated: false` but normalization succeeded, the missing preview is a review limitation, not an import blocker.
 - When previews are available, every preview image matches the requested material look closely enough for the supported graph surface.
 - No blocking issue remains.

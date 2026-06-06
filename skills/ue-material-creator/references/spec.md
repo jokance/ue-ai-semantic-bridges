@@ -36,7 +36,7 @@ Graph layout settings:
 
 ```text
   graph
-    result_pos "360,0"
+    result_pos "0,0"
 ```
 
 Node declaration and properties:

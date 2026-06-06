@@ -27,5 +27,5 @@
 
 - Prefer engine built-in fallback assets only when a texture asset is required and the user did not provide one.
 - Keep generated graphs deterministic: stable node ids, stable parameter names, and no random GUIDs unless a node requires a GUID relation such as named reroute declaration/usage.
-- Keep generated graph layouts deterministic: every graph node must have a `pos`, nodes should be layered left-to-right by data flow, common inputs should be leftmost, output-near nodes should be rightmost, and same-column nodes should use at least `180` vertical spacing.
+- Keep generated graph layouts deterministic: new material graphs should set `graph.result_pos` to `0,0`, every expression node must have a `pos`, expression nodes should be placed left of the Material Result node and layered left-to-right by data flow, common inputs should be leftmost, output-near nodes should be rightmost, horizontal columns should be at least `420` apart, and same-column nodes should use at least `260` vertical spacing.
 - For `ExpressionGUID`, preserve existing values during edits. For new parameter nodes, omit it unless import validation requires one.

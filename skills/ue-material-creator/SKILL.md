@@ -13,7 +13,7 @@ Use this skill for `MaterialSemanticBridge` workflows in this repository: analyz
 - editing an existing `.materialdsl` file
 - converting material notes, shader graph descriptions, screenshots, or look-dev requirements into Material DSL
 - checking whether a `MaterialExpression*` class, property, pin, material setting, or output is supported before generating DSL
-- setting graph layout metadata such as `graph.result_pos` to keep the Material Result node from overlapping generated nodes
+- setting graph layout metadata such as `graph.result_pos` so new material graphs keep the Material Result node at `0,0` and generated nodes do not overlap it
 - repairing a DSL draft that is failing validation, preview review, import, export, or round-trip checks
 
 Do not use this skill for:
@@ -84,7 +84,7 @@ If a local reference is still not enough to disambiguate an exact property, pin,
 - Do not emit `MaterialExpressionParameter`; use concrete subclasses such as `MaterialExpressionScalarParameter`, `MaterialExpressionVectorParameter`, or texture parameter classes.
 - Use only properties and pins proven by `Mode=schema` or existing import/export behavior. For property-driven dynamic pins, `Mode=schema` only flags that pins are dynamic; use the relevant property values, a normalized/exported graph, or local tests for exact pin names.
 - Prefer small import-safe graphs over speculative large graphs.
-- Use a `graph` block with `result_pos "X,Y"` when the Material Result node needs an explicit graph editor position, especially when generated nodes would otherwise overlap it.
+- For new material graphs, use a `graph` block with `result_pos "0,0"` and position generated expression nodes to the left of that fixed Material Result anchor with enough horizontal and vertical spacing to avoid overlap.
 - Omit defaults whenever possible so the file stays close to canonical export shape.
 - If a requested feature is unsupported, asset-dependent, or context-dependent, say so explicitly and propose the nearest supported fallback.
 

@@ -43,9 +43,12 @@ Turn the material plan into the smallest import-safe DSL draft that follows `pro
 - Use `<MaterialOutput> <sourceNode>.<sourcePin>` inside the `outputs` block for material outputs. `Mode=material-schema` output names are authoritative.
 - For property-driven dynamic pins, `Mode=schema` only tells you that dynamic pins exist. Use the configured property values, an exported/normalized graph, or local tests to determine exact dynamic pin names.
 - All generated graph DSL nodes must include `pos`. The importer does not auto-layout nodes, so missing `pos` values default to `0,0` and will overlap.
-- Use a `graph` block with `result_pos "X,Y"` when you need to move the material result node away from expression nodes.
-- Lay out nodes left-to-right by data flow.
-- Keep same-column node vertical spacing at least `180`, preferably `220`.
+- For new material graphs, include a `graph` block with `result_pos "0,0"` and treat the Material Result node as the fixed output anchor.
+- Do not place generated expression nodes at `0,0` in new graphs; reserve `0,0` for the Material Result node unless preserving an existing layout.
+- Place expression nodes to the left of the Material Result node and adjust every `pos` relative to that anchor.
+- Lay out nodes left-to-right by data flow, ending with output-near nodes in the rightmost expression column before the result node.
+- Keep horizontal column spacing at least `420`, preferably `520`; use `560` or more for wide nodes such as texture samples, material attributes, custom expressions, or nodes with many visible pins.
+- Keep same-column node vertical spacing at least `260`, preferably `320`; use `380` or more for tall nodes, texture samples, material attributes, or dense parameter groups.
 - Place common input nodes in the leftmost column.
 - Place output-near nodes in the rightmost column.
 - Group nodes by output branch into lanes where possible to reduce crossings.

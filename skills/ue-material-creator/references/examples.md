@@ -11,13 +11,16 @@ material "M_DebugRed"
     blend_mode "opaque"
     shading_model "default_lit"
 
+  graph
+    result_pos "0,0"
+
   node color MaterialExpressionConstant3Vector
     Constant "(R=0.8,G=0.05,B=0.02,A=1)"
-    pos "0,0"
+    pos "-520,-160"
 
   node rough MaterialExpressionConstant
     R "0.45"
-    pos "0,180"
+    pos "-520,160"
 
   outputs
     BaseColor color.rgb
@@ -33,23 +36,26 @@ material "M_ParameterizedTexture"
     blend_mode "opaque"
     shading_model "default_lit"
 
+  graph
+    result_pos "0,0"
+
   node uv MaterialExpressionTextureCoordinate
     UTiling "1.0"
     VTiling "1.0"
-    pos "-600,0"
+    pos "-1560,0"
 
   node tint MaterialExpressionVectorParameter
     ParameterName "Tint"
     DefaultValue "(R=1,G=1,B=1,A=1)"
-    pos "-300,-220"
+    pos "-1040,-320"
 
   node tex MaterialExpressionTextureSampleParameter2D
     ParameterName "Albedo"
     Texture "/Script/Engine.Texture2D'/Engine/EngineResources/WhiteSquareTexture.WhiteSquareTexture'"
-    pos "-300,0"
+    pos "-1040,0"
 
   node mul MaterialExpressionMultiply
-    pos "0,0"
+    pos "-520,0"
 
   connections
     uv.output0 -> tex.coordinates
@@ -64,18 +70,21 @@ material "M_ParameterizedTexture"
 
 ```text
 material "M_NamedRerouteExample"
+  graph
+    result_pos "0,0"
+
   node value MaterialExpressionConstant3Vector
     Constant "(R=0.2,G=0.4,B=0.8,A=1)"
-    pos "-900,0"
+    pos "-1560,0"
 
   node declaration MaterialExpressionNamedRerouteDeclaration
     Name "SharedColor"
     VariableGuid "0123456789ABCDEFFEDCBA9876543210"
-    pos "-350,0"
+    pos "-1040,0"
 
   node usage MaterialExpressionNamedRerouteUsage
     DeclarationGuid "0123456789ABCDEFFEDCBA9876543210"
-    pos "180,0"
+    pos "-520,0"
 
   connections
     value.rgb -> declaration.input0
@@ -88,20 +97,23 @@ material "M_NamedRerouteExample"
 
 ```text
 material "M_MaterialAttributes"
+  graph
+    result_pos "0,0"
+
   node base MaterialExpressionConstant3Vector
     Constant "(R=0.2,G=0.35,B=0.9,A=1)"
-    pos "-420,-180"
+    pos "-1040,-320"
 
   node rough MaterialExpressionConstant
     R "0.6"
-    pos "-420,0"
+    pos "-1040,0"
 
   node metal MaterialExpressionConstant
     R "0.0"
-    pos "-420,180"
+    pos "-1040,320"
 
   node attrs MaterialExpressionMakeMaterialAttributes
-    pos "180,0"
+    pos "-520,0"
 
   connections
     base.rgb -> attrs.base_color

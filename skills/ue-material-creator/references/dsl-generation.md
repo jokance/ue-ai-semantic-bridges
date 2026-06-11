@@ -56,4 +56,4 @@ Turn the material plan into the smallest import-safe DSL draft that follows `pro
 - Prefer `output0` for default scalar/vector output unless a named pin is clearer or schema/export examples show a canonical pin.
 - For vector-to-scalar material outputs, connect an explicit channel such as `.r`.
 - For vector material outputs, connect `.rgb` or a compatible multi-channel pin.
-- Treat preview review feedback as a material-art direction bug: adjust the graph, settings, parameters, or fallback approach until the exported preview matches the requested read.
+- Treat preview review feedback as a material-art direction bug: adjust the graph, settings, or parameters until the exported material preview matches the requested read.

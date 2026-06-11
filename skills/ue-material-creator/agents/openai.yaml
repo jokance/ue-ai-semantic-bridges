@@ -1,4 +1,4 @@
 interface:
   display_name: "UE Material Creator"
-  short_description: "Design, generate, normalize, and import Material DSL."
+  short_description: "Design Material DSL and review material previews."
   default_prompt: "Use $ue-material-creator to analyze a UE material request, generate .materialdsl, normalize it against MaterialSemanticBridge, repair until normalization succeeds, and import it."

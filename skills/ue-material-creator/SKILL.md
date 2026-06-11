@@ -1,11 +1,11 @@
 ---
 name: ue-material-creator
-description: Use when analyzing Unreal material requirements, generating or editing `.materialdsl` files for MaterialSemanticBridge, validating reflected `MaterialExpression*` nodes, material outputs, and graph layout settings such as the result node position, and iterating material DSL until it is import-ready.
+description: Use when analyzing Unreal material requirements, generating or editing `.materialdsl` files for MaterialSemanticBridge, validating reflected `MaterialExpression*` nodes and material outputs, normalizing/importing DSL, and reviewing generated material preview images from commandlet requests.
 ---
 
 # UE Material Creator
 
-Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, place nodes and the material result node clearly, normalize it through `MaterialSemanticCommandlet`, review the exported material preview image or dynamic preview frames when available, repair until normalization succeeds and preview review has no blocking visual mismatch, then import the accepted DSL into the mapped `/Game` material target.
+Use this skill for `MaterialSemanticBridge` workflows in this repository: analyze the material request, generate or edit `.materialdsl`, place nodes and the material result node clearly, normalize it through `MaterialSemanticCommandlet`, review the exported material preview image or preview frame sequence when available, repair until normalization succeeds and preview review has no blocking visual mismatch, then import the accepted DSL into the mapped `/Game` material target.
 
 ## When To Use
 
@@ -30,7 +30,7 @@ Always follow this loop:
 1. Analyze the material from a production technical-art perspective. Read [references/material-analysis.md](references/material-analysis.md).
 2. Satisfy the requested visual read and production quality bar before simplifying the graph.
 3. Generate or edit concise, parameterized DSL. Read [references/dsl-generation.md](references/dsl-generation.md).
-4. Normalize, review the exported preview image or all emitted dynamic preview frames, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
+4. Normalize, review the exported material preview image or all emitted preview frames, repair, and import the generated DSL. Read [references/dsl-validation.md](references/dsl-validation.md).
 
 ## Technical Art Quality Bar
 
@@ -53,7 +53,7 @@ A concise material is acceptable only when it still has:
 - no misleading renderer assumptions
 - no flat placeholder look unless the user explicitly asks for one
 
-Before generating DSL, decide where the material will be used, what must read first, what performance budget is appropriate, what Unreal rendering limitations affect the request, and what fallback gives the closest reliable result.
+Before generating DSL, decide where the material will be used, what must read first, what performance budget is appropriate, what Unreal rendering limitations affect the request, and whether the generated preview gives a reliable visual read for review.
 
 ## Authoritative Sources
 
@@ -95,7 +95,6 @@ When generated or modified materials require any manual user action after import
 - replace placeholder textures or assign project-specific texture assets
 - set or tune material instance parameters
 - connect runtime parameter updates from Blueprint, Niagara, Sequencer, or gameplay code
-- review unavailable or failed preview images manually in Unreal Editor
-- verify a fallback used because a requested feature was unsupported or asset-dependent
+- review unavailable or failed material preview images manually in Unreal Editor
 
 Do not bury required user actions in implementation details. Put them in a short final checklist so the user knows what remains outside the DSL/import workflow.

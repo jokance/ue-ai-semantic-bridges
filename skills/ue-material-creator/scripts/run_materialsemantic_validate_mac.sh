@@ -20,7 +20,7 @@ REPO_ROOT="$(find_project_root "$PWD" || find_project_root "$SCRIPT_DIR" || true
 if [[ -z "$REPO_ROOT" ]]; then
   REPO_ROOT="$(cd "$SCRIPT_DIR/../../../.." && pwd)"
 fi
-DEFAULT_REQUEST_PATH="$REPO_ROOT/Saved/MaterialDSLTemp/materialsemantic-request.json"
+DEFAULT_REQUEST_PATH="$REPO_ROOT/Saved/MaterialSemanticBridge/MaterialDSLTemp/materialsemantic-request.json"
 
 PROJECT_FILE=""
 ENGINE_ROOT=""
@@ -40,7 +40,7 @@ Usage:
   $0 --input <file.materialdsl> [options]
 
 No-argument mode:
-  Reads request settings from Saved/MaterialDSLTemp/materialsemantic-request.json.
+  Reads request settings from Saved/MaterialSemanticBridge/MaterialDSLTemp/materialsemantic-request.json.
   This is the preferred mode for stable command invocation.
 
 Options:
@@ -351,7 +351,7 @@ fi
 INPUT_ROOT="$PROJECT_ROOT/.ue_dsl/MaterialDSL"
 INPUT_ROOT="$(resolve_optional_path "$INPUT_ROOT")"
 
-TEMP_OUTPUT_DIR="$PROJECT_ROOT/Saved/MaterialDSLTemp"
+TEMP_OUTPUT_DIR="$PROJECT_ROOT/Saved/MaterialSemanticBridge/MaterialDSLTemp"
 mkdir -p "$TEMP_OUTPUT_DIR"
 if [[ -z "$REPORT_PATH" ]]; then
   REPORT_PATH="$TEMP_OUTPUT_DIR/materialsemantic-${MODE}.json"

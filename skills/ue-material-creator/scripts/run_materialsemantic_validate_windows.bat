@@ -10,7 +10,7 @@ if defined PROJECT_ROOT (
 ) else (
 	for %%I in ("%SCRIPT_DIR%..\..\..\..") do set "REPO_ROOT=%%~fI"
 )
-set "DEFAULT_REQUEST_PATH=%REPO_ROOT%\Saved\MaterialDSLTemp\materialsemantic-request.json"
+set "DEFAULT_REQUEST_PATH=%REPO_ROOT%\Saved\MaterialSemanticBridge\MaterialDSLTemp\materialsemantic-request.json"
 set "PROJECT_ROOT="
 
 set "PROJECT_FILE="
@@ -91,7 +91,7 @@ if not exist "%INPUT_PATH%" (
 set "INPUT_ROOT=%PROJECT_ROOT%\.ue_dsl\MaterialDSL"
 for %%I in ("%INPUT_ROOT%") do set "INPUT_ROOT=%%~fI"
 
-set "TEMP_OUTPUT_DIR=%PROJECT_ROOT%\Saved\MaterialDSLTemp"
+set "TEMP_OUTPUT_DIR=%PROJECT_ROOT%\Saved\MaterialSemanticBridge\MaterialDSLTemp"
 if not exist "%TEMP_OUTPUT_DIR%" mkdir "%TEMP_OUTPUT_DIR%"
 if not defined REPORT_PATH set "REPORT_PATH=%TEMP_OUTPUT_DIR%\materialsemantic-%MODE%.json"
 call :resolve_project_path "%REPORT_PATH%" REPORT_PATH
@@ -307,7 +307,7 @@ echo   %~f0
 echo   %~f0 --input ^<file.materialdsl^> [options]
 echo.
 echo No-argument mode:
-echo   Reads request settings from Saved\MaterialDSLTemp\materialsemantic-request.json.
+echo   Reads request settings from Saved\MaterialSemanticBridge\MaterialDSLTemp\materialsemantic-request.json.
 echo   This is the preferred mode for stable command invocation.
 echo.
 echo Options:

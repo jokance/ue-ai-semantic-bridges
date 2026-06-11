@@ -20,15 +20,10 @@
 
 该 skill 面向编辑器生产工作流，不用于运行时逻辑生成。
 
-展示：
+- [展示](https://www.youtube.com/watch?v=OsDRfoziQg8)
+- [指南](ue-widget-creator.cn.md)
 
-- [YouTube Video](https://www.youtube.com/watch?v=OsDRfoziQg8)
-
-文档：
-
-- [Guide (中文)](ue-widget-creator.cn.md)
-
-### `ue-material-creator`
+### `ue-material-creator`（即将发布）
 
 `ue-material-creator` 是 `MaterialSemanticBridge` 的 skill 工作流。
 
@@ -44,6 +39,8 @@
 
 该 skill 面向编辑器生产工作流，不用于运行时材质实例参数修改或无关的 Unreal C++ 工作。
 
-文档：
+- [指南](ue-material-creator.cn.md)
 
-- [Guide (中文)](ue-material-creator.cn.md)
+## 社区
+
+- [Discord](https://discord.gg/gbbPGeVXw9)

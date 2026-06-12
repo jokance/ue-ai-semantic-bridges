@@ -4,7 +4,7 @@ Normalize a generated `.materialdsl` by running the platform fixed launcher. For
 
 If the user explicitly asks only to `import`, `reimport`, `directly import`, or `导入` an existing `.materialdsl` file, do not run the normalize flow first. Run `mode: "import"` directly, unless the user also asks to validate, normalize, repair, or stabilize the DSL.
 
-For files under `.ue_dsl/MaterialDSL/<relative_path>.materialdsl`, the review image path is canonicalized to `Saved/MaterialSemanticBridge/MaterialDSLPreview/<relative_path>.png` for static materials. Dynamic materials may emit numbered frames such as `Saved/MaterialSemanticBridge/MaterialDSLPreview/<relative_path>_01.png` through `_09.png` after skipping the first two warmup intervals. Dynamic reports use the frame sequence in `preview_images` for review and do not generate stitched contact sheets. If only `preview_image` is present, read that path. Normalize preview export uses the material preview path. The normalize report leaves preview image fields empty only when no preview was generated.
+For files under `.ue_dsl/MaterialDSL/<relative_path>.materialdsl`, normalize preview export writes cache-busting image paths under `Saved/MaterialSemanticBridge/MaterialDSLPreview/` by appending a per-run id to the DSL-relative base name. Static materials emit one path such as `<relative_name>_<runid>.png`. Dynamic materials may emit numbered frames such as `<relative_name>_<runid>_01.png` through `_09.png` after skipping the first two warmup intervals. Dynamic reports use the exact frame sequence in `preview_images` for review and do not generate stitched contact sheets. Never reconstruct preview paths manually; always read `preview_images` from the normalize report, or `preview_image` when only one image is present. The normalize report leaves preview image fields empty only when no preview was generated.
 
 ## Flow
 
@@ -53,12 +53,14 @@ Optional request file fields:
 - `report`: optional JSON report path
 - `build`: `true` to build before running
 - `preview_frame_interval_seconds`: optional positive number of seconds between captured dynamic preview frames; defaults to `0.25`
+- `preview_shape`: optional normalize preview mesh shape. Supported values are `sphere`, `cube`, and `plane`. Defaults to `sphere`.
 
 Normal preview behavior and report fields:
 
 - By default, the commandlet chooses one frame for static materials and up to 9 interval frames for dynamic materials.
 - By default, dynamic previews skip the first two warmup render frames before saving review frames.
 - The default dynamic frame interval is `0.25` seconds, which gives slower pulses, panners, and short animation cycles enough time to read across the nine-frame sequence. Override it per request with `preview_frame_interval_seconds` when a material needs a shorter or longer review window.
+- The default surface preview shape is `sphere`. Override it per request with `preview_shape` or pass `-PreviewShape=sphere|cube|plane` to the commandlet. This affects commandlet-rendered normalize previews and `preview-object`; UI-domain material previews still use the Slate UI preview path.
 - In `normalize` mode, the fixed launchers pass `-AllowCommandletRendering` so material previews can render with RHI instead of using `-NullRHI`.
 - Material previews require rendering. Missing dimensions or an invalid pixel buffer should be reported as `preview_generated: false`; valid black, transparent, or alpha-only previews should still be saved as preview output.
 - Preview PNGs should match the requested material type.
@@ -68,6 +70,10 @@ Normal preview behavior and report fields:
 - `preview_contact_sheet` is kept as a compatibility field but should be empty; dynamic previews are reviewed from the individual frame paths in `preview_images`.
 - `preview_source` and `preview_sources` are compatibility report fields; review workflow should use `preview_image` and `preview_images` as the source of truth for generated files.
 - `preview_frame_count`, `preview_frame_interval_seconds`, and `preview_skipped_frame_count` describe what the commandlet emitted. `preview_frame_interval_seconds` reports either the default interval or the request override that was used.
+- `preview_shape` reports the normalized preview shape that was requested and used for rendered surface/material-instance previews.
+- `preview_dynamic` indicates whether the normalized material contains a time-driven expression that triggered dynamic frame capture.
+- `preview_frames_have_meaningful_difference` is `true` only when captured dynamic frames exceeded the commandlet's visual-difference threshold.
+- `preview_frame_warning` is empty when no dynamic-frame caveat exists. When set to `no_meaningful_frame_difference`, the commandlet kept the captured frame files but did not verify obvious visual motion from the thumbnail sequence; inspect the material in-editor or adjust preview timing/material defaults before accepting animation quality.
 - `preview_generated: false` means visual review was unavailable from the commandlet output. It is not a normalize/import blocker by itself.
 
 Normalize example:
@@ -77,7 +83,8 @@ Normalize example:
   "project": "<Project>/SilverGame.uproject",
   "input": ".ue_dsl/MaterialDSL/Materials/M_Test.materialdsl",
   "mode": "normalize",
-  "preview_frame_interval_seconds": 0.25
+  "preview_frame_interval_seconds": 0.25,
+  "preview_shape": "sphere"
 }
 ```
 
@@ -111,6 +118,8 @@ Each launcher supports two modes of invocation:
 For `normalize`, the fixed launcher must run the commandlet with `-AllowCommandletRendering` so preview review can use generated preview images. For `validate` and `import`, the launcher may keep using `-NullRHI` because those modes do not require preview rendering.
 
 For debugging or manual reproduction, each launcher also supports explicit arguments such as `--project`, `--engine`, `--input`, `--validate`, `--normalize`, and `--import`. If `--engine` or request-field `engine` is omitted, the launcher resolves the engine from the project `EngineAssociation` first, then falls back to `UE_ENGINE_ROOT` and platform-specific local engine probes. Relative `--input` values are resolved under the project root. Temporary files are written under `Saved/MaterialSemanticBridge/MaterialDSLTemp/` with fixed default names such as `materialsemantic-normalize.json/.log`, `materialsemantic-validate.json/.log`, and `materialsemantic-import.json/.log`.
+
+For shape-specific preview debugging, pass `--preview-shape cube` or `--preview-shape plane` to the fixed launcher in normalize mode, or to the editor request wrapper in `preview-object` mode.
 
 ## Already-Running Editor Fallback
 

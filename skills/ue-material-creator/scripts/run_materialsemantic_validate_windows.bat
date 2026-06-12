@@ -20,6 +20,7 @@ set "INPUT_PATH="
 set "REPORT_PATH="
 set "LOG_PATH="
 set "PREVIEW_FRAME_INTERVAL_SECONDS="
+set "PREVIEW_SHAPE="
 set "BUILD_BEFORE_RUN=0"
 set "MODE=validate"
 set "MODE_SPECIFIED=0"
@@ -158,6 +159,18 @@ if /I "%~1"=="--preview-frame-interval-seconds" (
 	goto parse_args
 )
 
+if /I "%~1"=="--preview-shape" (
+	if "%~2"=="" (
+		1>&2 echo Missing value for --preview-shape.
+		call :usage 1>&2
+		exit /b 2
+	)
+	set "PREVIEW_SHAPE=%~2"
+	shift
+	shift
+	goto parse_args
+)
+
 if /I "%~1"=="--validate" (
 	call :set_mode validate
 	if errorlevel 1 exit /b 2
@@ -225,12 +238,13 @@ if not exist "%DEFAULT_REQUEST_PATH%" (
 	exit /b 2
 )
 
-for /f "usebackq tokens=1,* delims=|" %%I in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $data = Get-Content -Raw -LiteralPath $env:DEFAULT_REQUEST_PATH | ConvertFrom-Json } catch { exit 3 }; function Emit([string] $key, [object] $value) { if ($null -eq $value) { return }; $stringValue = [string] $value; if ([string]::IsNullOrWhiteSpace($stringValue)) { return }; [Console]::WriteLine($key + '|' + $stringValue) }; Emit 'project' $data.project; Emit 'engine' $data.engine; Emit 'input' $data.input; Emit 'report' $data.report; Emit 'preview_frame_interval_seconds' $data.preview_frame_interval_seconds; if ($data.build -eq $true) { [Console]::WriteLine('build|true') }; $mode = [string] $data.mode; if ([string]::IsNullOrWhiteSpace($mode)) { $mode = 'validate' }; $mode = $mode.ToLowerInvariant(); if ($mode -notin @('validate','normalize','import')) { [Console]::Error.WriteLine('Unsupported mode in request file: ' + $mode); exit 2 }; [Console]::WriteLine('mode|' + $mode)"`) do (
+for /f "usebackq tokens=1,* delims=|" %%I in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $data = Get-Content -Raw -LiteralPath $env:DEFAULT_REQUEST_PATH | ConvertFrom-Json } catch { exit 3 }; function Emit([string] $key, [object] $value) { if ($null -eq $value) { return }; $stringValue = [string] $value; if ([string]::IsNullOrWhiteSpace($stringValue)) { return }; [Console]::WriteLine($key + '|' + $stringValue) }; Emit 'project' $data.project; Emit 'engine' $data.engine; Emit 'input' $data.input; Emit 'report' $data.report; Emit 'preview_frame_interval_seconds' $data.preview_frame_interval_seconds; Emit 'preview_shape' $data.preview_shape; if ($data.build -eq $true) { [Console]::WriteLine('build|true') }; $mode = [string]$data.mode; if ([string]::IsNullOrWhiteSpace($mode)) { $mode = 'validate' }; $mode = $mode.ToLowerInvariant(); if ($mode -notin @('validate','normalize','import')) { [Console]::Error.WriteLine('Unsupported mode in request file: ' + $mode); exit 2 }; [Console]::WriteLine('mode|' + $mode)"`) do (
 	if /I "%%I"=="project" set "PROJECT_FILE=%%J"
 	if /I "%%I"=="engine" set "ENGINE_ROOT=%%J"
 	if /I "%%I"=="input" set "INPUT_PATH=%%J"
 	if /I "%%I"=="report" set "REPORT_PATH=%%J"
 	if /I "%%I"=="preview_frame_interval_seconds" set "PREVIEW_FRAME_INTERVAL_SECONDS=%%J"
+	if /I "%%I"=="preview_shape" set "PREVIEW_SHAPE=%%J"
 	if /I "%%I"=="build" set "BUILD_BEFORE_RUN=1"
 	if /I "%%I"=="mode" (
 		call :set_mode %%J
@@ -293,6 +307,7 @@ echo Mode: %MODE%
 echo Report file: %REPORT_PATH%
 echo Log file: %LOG_PATH%
 if defined PREVIEW_FRAME_INTERVAL_SECONDS echo Preview frame interval seconds: %PREVIEW_FRAME_INTERVAL_SECONDS%
+if defined PREVIEW_SHAPE echo Preview shape: %PREVIEW_SHAPE%
 exit /b 0
 
 :run_commandlet
@@ -303,11 +318,13 @@ set "RHI_SWITCH=-NullRHI"
 if /I "%COMMANDLET_MODE%"=="normalize" set "RHI_SWITCH=-AllowCommandletRendering"
 set "PREVIEW_FRAME_INTERVAL_ARG="
 if defined PREVIEW_FRAME_INTERVAL_SECONDS set "PREVIEW_FRAME_INTERVAL_ARG=-PreviewFrameIntervalSeconds=%PREVIEW_FRAME_INTERVAL_SECONDS%"
+set "PREVIEW_SHAPE_ARG="
+if defined PREVIEW_SHAPE set "PREVIEW_SHAPE_ARG=-PreviewShape=%PREVIEW_SHAPE%"
 
 if exist "%REPORT_PATH%" del /q "%REPORT_PATH%" >nul 2>nul
 if exist "%LOG_PATH%" del /q "%LOG_PATH%" >nul 2>nul
 
-"%EDITOR_BINARY%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet "-Mode=%COMMANDLET_MODE%" "-Input=%INPUT_PATH%" "-InputRoot=%INPUT_ROOT%" "-Report=%REPORT_PATH%" -Format=json -Unattended -nop4 %RHI_SWITCH% %PREVIEW_FRAME_INTERVAL_ARG% -nosplash -NoEpicPortal -stdout -FullStdOutLogOutput "-abslog=%LOG_PATH%"
+"%EDITOR_BINARY%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet "-Mode=%COMMANDLET_MODE%" "-Input=%INPUT_PATH%" "-InputRoot=%INPUT_ROOT%" "-Report=%REPORT_PATH%" -Format=json -Unattended -nop4 %RHI_SWITCH% %PREVIEW_FRAME_INTERVAL_ARG% %PREVIEW_SHAPE_ARG% -nosplash -NoEpicPortal -stdout -FullStdOutLogOutput "-abslog=%LOG_PATH%"
 set "COMMANDLET_STATUS=%ERRORLEVEL%"
 
 if not exist "%REPORT_PATH%" (
@@ -332,6 +349,7 @@ echo   --project ^<path^>      Required .uproject path
 echo   --input ^<path^>        Absolute or project-relative .materialdsl input path
 echo   --report ^<path^>       Optional commandlet report path; relative paths resolve under the project root
 echo   --preview-frame-interval-seconds ^<seconds^>  Dynamic normalize preview frame spacing; request field: preview_frame_interval_seconds
+echo   --preview-shape ^<sphere^|cube^|plane^>       Normalize preview mesh; request field: preview_shape
 echo   --validate              Validate only ^(default if no mode is passed^)
 echo   --normalize             Normalize the input file in place
 echo   --import                Import the input file into its mapped /Game target

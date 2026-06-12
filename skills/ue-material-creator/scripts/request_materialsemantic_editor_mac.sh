@@ -30,6 +30,7 @@ INPUT_PATH=""
 INPUT_ROOT="${PROJECT_ROOT}/.ue_dsl/MaterialDSL"
 OBJECT_PATH=""
 OUTPUT_PATH=""
+PREVIEW_SHAPE=""
 TIMEOUT_SECONDS=240
 AUTO_LAUNCH_EDITOR=1
 EDITOR_EXE="${UE_EDITOR_EXE:-}"
@@ -47,6 +48,8 @@ Options:
   --input-root <path>         DSL root for import-root, or mapping root for import
   --object </Game/Path.Asset> Required for preview-object
   --output <file.png>         Required for preview-object
+  --preview-shape <sphere|cube|plane>
+                                Mesh shape for preview-object; default sphere
   --timeout <seconds>         Seconds to wait for the running Unreal Editor response; defaults to 240
   --editor-cmd-exe <path>     UnrealEditor-Cmd path for preview-object; defaults to UE_EDITOR_CMD_EXE, UE_EDITOR_CMD, or project engine resolution
   --editor-exe <path>         UnrealEditor path for editor request modes; defaults to UE_EDITOR_EXE or project engine resolution
@@ -282,6 +285,10 @@ run_preview_object_commandlet() {
     -FullStdOutLogOutput
   )
 
+  if [[ -n "$PREVIEW_SHAPE" ]]; then
+    commandlet_args+=("-PreviewShape=$PREVIEW_SHAPE")
+  fi
+
   if [[ -n "$DISABLE_PLUGINS" ]]; then
     commandlet_args+=("-DisablePlugins=$DISABLE_PLUGINS")
   fi
@@ -324,6 +331,11 @@ while [[ $# -gt 0 ]]; do
     --output)
       require_value "$1" "${2:-}"
       OUTPUT_PATH="$2"
+      shift 2
+      ;;
+    --preview-shape)
+      require_value "$1" "${2:-}"
+      PREVIEW_SHAPE="$2"
       shift 2
       ;;
     --timeout)

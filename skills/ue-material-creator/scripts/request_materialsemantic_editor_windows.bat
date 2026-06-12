@@ -20,6 +20,7 @@ set "INPUT_PATH="
 set "INPUT_ROOT=%PROJECT_ROOT%\.ue_dsl\MaterialDSL"
 set "OBJECT_PATH="
 set "OUTPUT_PATH="
+set "PREVIEW_SHAPE="
 set "TIMEOUT_SECONDS=240"
 set "AUTO_LAUNCH_EDITOR=1"
 set "EDITOR_EXE=%UE_EDITOR_EXE%"
@@ -185,6 +186,18 @@ if /I "%~1"=="--output" (
 	goto parse_args
 )
 
+if /I "%~1"=="--preview-shape" (
+	if "%~2"=="" (
+		1>&2 echo Missing value for --preview-shape.
+		call :usage 1>&2
+		exit /b 2
+	)
+	set "PREVIEW_SHAPE=%~2"
+	shift
+	shift
+	goto parse_args
+)
+
 if /I "%~1"=="--timeout" (
 	if "%~2"=="" (
 		1>&2 echo Missing value for --timeout.
@@ -319,10 +332,12 @@ if errorlevel 1 exit /b %ERRORLEVEL%
 set "REPORT_PATH=%REPORT_DIR%\materialsemantic-preview-object-%REQUEST_TIME%-%RANDOM%%RANDOM%.json"
 
 echo Running MaterialSemantic preview-object through UnrealEditor-Cmd: %PROJECT_FILE%
+set "PREVIEW_SHAPE_ARG="
+if defined PREVIEW_SHAPE set "PREVIEW_SHAPE_ARG=-PreviewShape=%PREVIEW_SHAPE%"
 if defined DISABLE_PLUGINS (
-	"%EDITOR_CMD_EXE%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet -Mode=preview-object -Format=json -Object="%OBJECT_PATH%" -Output="%OUTPUT_PATH%" -Report="%REPORT_PATH%" -AllowCommandletRendering -unattended -nop4 -nosplash -stdout -FullStdOutLogOutput -DisablePlugins="%DISABLE_PLUGINS%"
+	"%EDITOR_CMD_EXE%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet -Mode=preview-object -Format=json -Object="%OBJECT_PATH%" -Output="%OUTPUT_PATH%" -Report="%REPORT_PATH%" %PREVIEW_SHAPE_ARG% -AllowCommandletRendering -unattended -nop4 -nosplash -stdout -FullStdOutLogOutput -DisablePlugins="%DISABLE_PLUGINS%"
 ) else (
-	"%EDITOR_CMD_EXE%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet -Mode=preview-object -Format=json -Object="%OBJECT_PATH%" -Output="%OUTPUT_PATH%" -Report="%REPORT_PATH%" -AllowCommandletRendering -unattended -nop4 -nosplash -stdout -FullStdOutLogOutput
+	"%EDITOR_CMD_EXE%" "%PROJECT_FILE%" -run=MaterialSemanticCommandlet -Mode=preview-object -Format=json -Object="%OBJECT_PATH%" -Output="%OUTPUT_PATH%" -Report="%REPORT_PATH%" %PREVIEW_SHAPE_ARG% -AllowCommandletRendering -unattended -nop4 -nosplash -stdout -FullStdOutLogOutput
 )
 set "COMMANDLET_EXIT=%ERRORLEVEL%"
 if exist "%REPORT_PATH%" type "%REPORT_PATH%"
@@ -346,6 +361,7 @@ echo   --input ^<file.materialdsl^>  Required for import and normalize
 echo   --input-root ^<path^>         DSL root for import-root, or mapping root for import
 echo   --object ^</Game/Path.Asset^> Required for preview-object
 echo   --output ^<file.png^>         Required for preview-object
+echo   --preview-shape ^<sphere^|cube^|plane^>  Mesh shape for preview-object; default sphere
 echo   --timeout ^<seconds^>         Seconds to wait for the Unreal Editor response; defaults to 240
 echo   --editor-cmd-exe ^<path^>     UnrealEditor-Cmd.exe path for preview-object; defaults to UE_EDITOR_CMD_EXE or project UE 5.7 path
 echo   --editor-exe ^<path^>         UnrealEditor.exe path for editor request modes; defaults to UE_EDITOR_EXE or project UE 5.7 path

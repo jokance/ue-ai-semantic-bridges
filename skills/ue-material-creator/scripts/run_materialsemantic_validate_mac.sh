@@ -28,6 +28,7 @@ ENGINE_ROOT=""
 INPUT_PATH=""
 REPORT_PATH=""
 LOG_PATH=""
+PREVIEW_FRAME_INTERVAL_SECONDS=""
 TIMEOUT_SECONDS=1800
 BUILD_BEFORE_RUN=0
 MODE="validate"
@@ -47,6 +48,8 @@ Options:
   --project <path>      Required .uproject path
   --input <path>        Absolute or project-relative .materialdsl input path
   --report <path>       Optional commandlet report path; relative paths resolve under the project root
+  --preview-frame-interval-seconds <seconds>
+                        Dynamic normalize preview frame spacing; request field: preview_frame_interval_seconds
   --validate            Validate only (default if no mode is passed)
   --normalize           Normalize the input file in place after validation/import/export round-trip
   --import              Import the input file into its mapped /Game target
@@ -161,6 +164,7 @@ emit("PROJECT_FILE", request.get("project"))
 emit("ENGINE_ROOT", request.get("engine"))
 emit("INPUT_PATH", request.get("input"))
 emit("REPORT_PATH", request.get("report"))
+emit("PREVIEW_FRAME_INTERVAL_SECONDS", request.get("preview_frame_interval_seconds"))
 
 if request.get("build") is True:
     print("BUILD_BEFORE_RUN=1")
@@ -187,6 +191,7 @@ PY
       ENGINE_ROOT) ENGINE_ROOT="$value" ;;
       INPUT_PATH) INPUT_PATH="$value" ;;
       REPORT_PATH) REPORT_PATH="$value" ;;
+      PREVIEW_FRAME_INTERVAL_SECONDS) PREVIEW_FRAME_INTERVAL_SECONDS="$value" ;;
       BUILD_BEFORE_RUN) BUILD_BEFORE_RUN=1 ;;
       MODE)
         MODE="$value"
@@ -265,6 +270,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --project)
       PROJECT_FILE="$2"
+      shift 2
+      ;;
+    --preview-frame-interval-seconds)
+      PREVIEW_FRAME_INTERVAL_SECONDS="$2"
       shift 2
       ;;
     --validate)
@@ -370,6 +379,9 @@ echo "Input DSL: $INPUT_PATH"
 echo "Mode: $MODE"
 echo "Report file: $REPORT_PATH"
 echo "Log file: $LOG_PATH"
+if [[ -n "$PREVIEW_FRAME_INTERVAL_SECONDS" ]]; then
+  echo "Preview frame interval seconds: $PREVIEW_FRAME_INTERVAL_SECONDS"
+fi
 
 COMMANDLET_MODE="validate"
 if [[ "$MODE" == "normalize" ]]; then
@@ -400,6 +412,10 @@ COMMANDLET_ARGS=(
   -FullStdOutLogOutput
   "-abslog=$LOG_PATH"
 )
+
+if [[ -n "$PREVIEW_FRAME_INTERVAL_SECONDS" ]]; then
+  COMMANDLET_ARGS+=("-PreviewFrameIntervalSeconds=$PREVIEW_FRAME_INTERVAL_SECONDS")
+fi
 
 rm -f "$REPORT_PATH" "$LOG_PATH"
 

@@ -52,12 +52,13 @@ Optional request file fields:
 - `engine`: absolute Unreal Engine root path; if omitted, the launcher resolves from the project `EngineAssociation`, then falls back to `UE_ENGINE_ROOT`
 - `report`: optional JSON report path
 - `build`: `true` to build before running
+- `preview_frame_interval_seconds`: optional positive number of seconds between captured dynamic preview frames; defaults to `0.25`
 
 Normal preview behavior and report fields:
 
 - By default, the commandlet chooses one frame for static materials and up to 9 interval frames for dynamic materials.
 - By default, dynamic previews skip the first two warmup render frames before saving review frames.
-- The default dynamic frame interval is `0.1` seconds, which keeps fast pulses, panners, and short animation cycles from being skipped between review frames.
+- The default dynamic frame interval is `0.25` seconds, which gives slower pulses, panners, and short animation cycles enough time to read across the nine-frame sequence. Override it per request with `preview_frame_interval_seconds` when a material needs a shorter or longer review window.
 - In `normalize` mode, the fixed launchers pass `-AllowCommandletRendering` so material previews can render with RHI instead of using `-NullRHI`.
 - Material previews require rendering. Missing dimensions or an invalid pixel buffer should be reported as `preview_generated: false`; valid black, transparent, or alpha-only previews should still be saved as preview output.
 - Preview PNGs should match the requested material type.
@@ -66,7 +67,7 @@ Normal preview behavior and report fields:
 - `preview_images` contains every generated preview frame path. Review only the emitted paths in this array.
 - `preview_contact_sheet` is kept as a compatibility field but should be empty; dynamic previews are reviewed from the individual frame paths in `preview_images`.
 - `preview_source` and `preview_sources` are compatibility report fields; review workflow should use `preview_image` and `preview_images` as the source of truth for generated files.
-- `preview_frame_count`, `preview_frame_interval_seconds`, and `preview_skipped_frame_count` describe what the commandlet emitted. They are report fields, not request parameters.
+- `preview_frame_count`, `preview_frame_interval_seconds`, and `preview_skipped_frame_count` describe what the commandlet emitted. `preview_frame_interval_seconds` reports either the default interval or the request override that was used.
 - `preview_generated: false` means visual review was unavailable from the commandlet output. It is not a normalize/import blocker by itself.
 
 Normalize example:
@@ -75,7 +76,8 @@ Normalize example:
 {
   "project": "<Project>/SilverGame.uproject",
   "input": ".ue_dsl/MaterialDSL/Materials/M_Test.materialdsl",
-  "mode": "normalize"
+  "mode": "normalize",
+  "preview_frame_interval_seconds": 0.25
 }
 ```
 

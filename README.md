@@ -39,6 +39,7 @@ It is used to help an AI agent:
 
 This skill is meant for editor production workflows, not runtime material instance parameter changes or unrelated Unreal C++ work.
 
+- [Showcase](https://youtu.be/yN9iPlmiWok)
 - [Guide](docs/ue-material-creator.en.md)
 
 ## Community

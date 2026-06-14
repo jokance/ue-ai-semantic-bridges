@@ -6,7 +6,7 @@ This directory contains repository-local AI agent skills used together with proj
 
 ## Available Skills
 
-### `ue-widget-creator`
+### `ue-widget-creator` (WidgetSemanticBridge)
 
 `ue-widget-creator` is the skill workflow for `WidgetSemanticBridge`.
 
@@ -23,19 +23,19 @@ This skill is meant for editor production workflows, not runtime logic generatio
 - [Showcase](https://www.youtube.com/watch?v=OsDRfoziQg8)
 - [Guide](docs/ue-widget-creator.en.md)
 
-### `ue-material-creator` (Coming soon)
+### `ue-material-creator` (MaterialSemanticBridge)
 
 `ue-material-creator` is the skill workflow for `MaterialSemanticBridge`.
 
 It is used to help an AI agent:
 
-- analyze Unreal material requirements
-- generate or edit supported `.materialdsl`
-- distinguish material-instance DSL from material-graph DSL by DSL content and target asset type
-- stay inside the documented `MaterialExpression*`, property, material setting, graph layout, and output support surface
-- place material graph nodes clearly, including the Material Result node with `set graph.result_pos "X,Y"`
-- validate generated DSL before import
-- import validated DSL into Unreal `Material` or `MaterialInstanceConstant` assets
+- analyze material look-dev requirements and choose the right `Material` or `MaterialInstanceConstant` workflow
+- generate and edit supported `.materialdsl` for material graphs and material instances
+- validate and normalize DSL before it is imported into Unreal Engine
+- generate material preview images and reports so AI agents can visually self-evaluate the result and repair the `.materialdsl` before final import
+- import and export single assets between `.materialdsl` and Unreal `Material` / `MaterialInstanceConstant` assets
+- batch export `/Game` materials to DSL and import new or changed DSL files back into matching `/Game` folders
+- query supported material settings, outputs, and `MaterialExpression*` schemas for safer agent generation
 
 This skill is meant for editor production workflows, not runtime material instance parameter changes or unrelated Unreal C++ work.
 

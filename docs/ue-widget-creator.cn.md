@@ -58,18 +58,18 @@
 
 ### 2. 放置 skill
 
-在 Unreal Editor 中打开 `AIBridge` -> `Widget Semantic Bridge`，然后使用 `Agent Skill Setup` 将插件自带的 skill 拷贝到项目中。默认 `Destination Root` 是项目根目录，也可以点击 `Browse` 选择其它目录：
+在 Unreal Editor 中打开 `AIBridge` -> `Widget Semantic Bridge`，然后使用 `Download Agent Skill` 将 skill 下载到项目中。默认 `Destination Root` 是项目根目录，也可以点击 `Browse` 选择其它目录：
 
-![](../assets/copy_skill.jpg)
+![](../assets/ue-widget-creator-download-skill.png)
 
 根据你使用的 Agent 工具保留对应目标：
 
 - Codex / Gemini CLI / Cursor / GitHub Copilot / OpenCode 以及其它兼容 `AGENTS.md` 的 Agent 工具：`.agents/skills/ue-widget-creator/`
 - Claude Code: `.claude/skills/ue-widget-creator/`
 
-你也可以直接在 GitHub 上下载 ZIP 文件，解压后把 `ue-widget-creator` 目录拷贝到对应的 `skills` 目录下：
+你也可以直接在 [GitHub](https://github.com/jokance/ue-ai-semantic-bridges/tree/main) 上下载 ZIP 文件，解压后把 `skills/ue-widget-creator` 目录拷贝到对应的 `skills` 目录下：
 
-![](../assets/github_skill.jpg)
+![](../assets/download-github-skill.png)
 
 推荐优先放在项目仓库中，这样团队成员和自动化环境可以共享同一份工作流说明。
 
@@ -81,9 +81,11 @@
 .agents/
   skills/
     ue-widget-creator/
-      SKILL.md
+      agents/
       references/
       scripts/
+      .version
+      SKILL.md
 ```
 
 ## 适用场景
@@ -104,11 +106,6 @@
 - 不在支持面内的任意自定义控件
 
 ## AI Agent 应该怎么用这个 skill
-
-无论是 `Claude Code`、`Codex` 还是 `Gemini CLI`，核心要求都一样：
-
-- Agent 能访问项目仓库
-- Agent 能执行本地脚本或 commandlet（执行过程中 Agent 可能会要求运行命令授权）
 
 推荐操作方式：
 

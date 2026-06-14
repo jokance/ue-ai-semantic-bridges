@@ -1,21 +1,21 @@
 # ue-widget-creator ガイド
 
-このドキュメントでは、`ue-widget-creator` skill と `WidgetSemanticBridge` プラグインを組み合わせて使い、AI Agent が静的 UI、ウィジェットアニメーション DSL を生成し、検証、プレビュー、UMG Widget Blueprint へのインポートまで行う方法を説明します。
+このドキュメントでは、`ue-widget-creator` skill と `WidgetSemanticBridge` プラグインを組み合わせて、AI Agent が静的 UI、ウィジェットアニメーション DSL を生成し、検証、プレビュー、UMG Widget Blueprint へのインポートまで行う方法を説明します。
 
 ![カバー](../assets/cover_main.jpg)
 
 ## これは何か
 
-`ue-widget-creator` は AI Agent 向けに設計されたワークフロー skill です。
+`ue-widget-creator` は AI Agent 向けのワークフロー skill です。
 
 これは Unreal のランタイムコードではなく、単体のプラグインでもありません。目的は、AI Agent に次の作業を行わせるための指針を与えることです。
 
 - UI 要件を分析する
 - 要件をサポート済みの `.widgetdsl` に変換する
-- 生成内容を `WidgetSemanticBridge` がサポートするウィジェット、プロパティ、スロット、アニメーショントラックの範囲内に保つ
-- `animation` / `track` セクションを生成または編集する
+- 生成範囲を `WidgetSemanticBridge` がサポートするウィジェット、プロパティ、Slot、アニメーショントラックの範囲内に制限する
+- `animation` / `track` セクションを生成または修正する
 - インポート前に検証とプレビューを実行する
-- 検証済み DSL を Unreal 内の実際の `WBP_*` アセットとしてインポートする
+- 検証済み DSL を Unreal 内の実際の `WBP_*` としてインポートする
 
 ## WidgetSemanticBridge との関係
 
@@ -24,21 +24,21 @@
 - `WidgetSemanticBridge`: 検証、プレビュー、インポートを担当する [Unreal Editor プラグイン](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f)
 - `ue-widget-creator`: 要件分析と DSL 生成ワークフローを担当する AI Agent skill
 
-プラグインが実作業を実行し、skill がワークフローを定義します。
+プラグインが実行を担当し、skill がワークフローを担当します。
 
-## ゲーム UI 開発をどう改善するか
+## ゲーム開発の効率化における価値
 
-ゲームプロジェクトでは、ゲームプレイ、バランス、ビジュアルデザインの変更に合わせて UI を何度も調整する必要があります。`WidgetSemanticBridge` プラグインと `ue-widget-creator` を組み合わせることで、「要件を説明する -> DSL を生成する -> 検証 / プレビューする -> Blueprint にインポートする」という流れを繰り返し実行できるワークフローにでき、手作業で UMG を組んだりエディタを何度も操作したりする時間を大きく減らせます。
+ゲームプロジェクトでは、UI はゲームプレイ、数値、グラフィックデザインのフィードバックに合わせて何度も調整されます。`WidgetSemanticBridge` プラグインと `ue-widget-creator` を組み合わせることで、「要件を説明する -> DSL を生成する -> 検証 / プレビューする -> Blueprint にインポートする」という流れを再現可能なワークフローにでき、手作業で UI を組んだりエディタを何度もクリックしたりする時間を大きく減らせます。
 
-主な利点は次のとおりです。
+主な利点は次の通りです。
 
-- インベントリ、メインメニュー、クエストパネル、ポップアップなどの UI プロトタイプをより速く作成できる
-- デザインモック、スケッチ、文章による要件を、インポート可能な Widget Blueprint により速く変換でき、実装時の情報ロスを減らせる
-- レイアウトと一部のアニメーションが `.widgetdsl` テキストとして表現されるため、AI が UI 記述を理解、生成、修正しやすくなり、UI インタラクション、状態変化、画面フローの調整を高速に反復できる
-- 生成または再エクスポートされた DSL は、AI による UI ロジック作成にも利用できる。WBP を変更した後に DSL を再度エクスポートすれば、AI が変更後の UI に合わせてロジックを更新できるため、UI コードを一行ずつ手書きする必要を減らせる。特に Lua、TypeScript、Python などのスクリプト言語と相性がよく、C++ や Blueprint よりも AI が速く反復しやすい
-- インポート前の検証とプレビューにより、未対応のウィジェット、プロパティ、レイアウト上の問題を早い段階で発見でき、手戻りを減らせる
-- `.widgetdsl` ファイルの一括生成や一括変更は、チーム作業や自動化ワークフローに適しており、UI アセットをバージョン管理しやすい
-- UI の構造的な作業をプラグインと skill に任せることで、開発者はゲームプレイロジック、インタラクションの磨き込み、ランタイム挙動の実装により多くの時間を使える
+- インベントリ、メインメニュー、クエストパネル、ポップアップなどの機能画面の UI プロトタイプをより速く作成できる
+- デザイン稿、スケッチ、文章説明を、インポート可能な Widget Blueprint により速く落とし込め、実装経路での情報損失を減らせる
+- 画面レイアウトと一部のアニメーションが `.widgetdsl` テキスト形式で表現されるため、AI が対応する UI 記述を理解、生成、修正しやすくなり、UI インタラクション、状態切り替え、フロー調整の反復速度を高められる
+- 生成または再エクスポートされた DSL は、AI に UI ロジックを書かせるためにも直接渡せる。WBP 変更後に再度 DSL をエクスポートすれば、AI は最新の UI に合わせてロジックコードを調整でき、通常は UI コードを 1 行ずつ手書きする必要がなくなる。この使い方は、大量の UI ロジックを C++ や Blueprint で書くよりも、Lua、TypeScript、Python などのスクリプト言語と組み合わせる方が推奨される
+- インポート前に検証とプレビューを行うことで、未対応のウィジェット、プロパティ、レイアウト問題をより早く発見でき、手戻りコストを下げられる
+- `.widgetdsl` の一括生成や一括修正は、チーム協業や自動化フローに適しており、UI アセットをバージョン管理に載せやすい
+- UI の構造的な作業をプラグインと skill に任せることで、開発者はゲームプレイロジック、インタラクションの細部、ランタイム挙動の実装により多くの時間を使える
 
 ## インストール
 
@@ -47,6 +47,7 @@
 プラグインリンク: [WidgetSemanticBridge](https://www.fab.com/listings/92270793-0b09-406a-81b9-d6f9f307044f)
 
 プラグインを Fab から入手する場合、通常は `Install to Engine` で Unreal Engine ディレクトリにインストールします。
+
 
 `WidgetSemanticBridge` は次の 2 つのインストール方式をサポートしています。
 
@@ -57,18 +58,18 @@
 
 ### 2. skill を配置する
 
-Unreal Editor で `AIBridge` -> `Widget Semantic Bridge` を開き、`Agent Skill Setup` を使って、プラグインに同梱されている skill をプロジェクトへコピーします。デフォルトの `Destination Root` はプロジェクトルートですが、`Browse` をクリックして別のフォルダを選択することもできます。
+Unreal Editor で `AIBridge` -> `Widget Semantic Bridge` を開き、`Download Agent Skill` を使って skill をプロジェクトにダウンロードします。デフォルトの `Destination Root` はプロジェクトルートですが、`Browse` をクリックして別のフォルダを選択することもできます。
 
-![](../assets/copy_skill.jpg)
+![](../assets/ue-widget-creator-download-skill.png)
 
 使用する Agent ツールに合わせて対象を選択してください。
 
 - Codex / Gemini CLI / Cursor / GitHub Copilot / OpenCode、およびその他の `AGENTS.md` 互換 Agent ツール: `.agents/skills/ue-widget-creator/`
 - Claude Code: `.claude/skills/ue-widget-creator/`
 
-GitHub から ZIP ファイルを直接ダウンロードし、展開したあと、`ue-widget-creator` ディレクトリを対応する `skills` ディレクトリへコピーすることもできます。
+[GitHub](https://github.com/jokance/ue-ai-semantic-bridges/tree/main) から ZIP ファイルを直接ダウンロードし、展開したあと、`skills/ue-widget-creator` ディレクトリを対応する `skills` ディレクトリへコピーすることもできます。
 
-![](../assets/github_skill.jpg)
+![](../assets/download-github-skill.png)
 
 チームメンバーや自動化環境が同じワークフロー指示を共有できるよう、プロジェクトリポジトリ内に置くことを推奨します。
 
@@ -80,34 +81,31 @@ GitHub から ZIP ファイルを直接ダウンロードし、展開したあ�
 .agents/
   skills/
     ue-widget-creator/
-      SKILL.md
+      agents/
       references/
       scripts/
+      .version
+      SKILL.md
 ```
 
 ## 適したユースケース
 
 適している用途:
 
-- テキスト要件、デザインモック、スケッチから UMG UI を生成する
-- デザイン画像や文章仕様をもとに `.widgetdsl` を書く
+- テキスト、デザイン稿、スケッチなどの要件から UMG UI を生成する
+- デザイン画像や説明をもとに `.widgetdsl` を補完して書く
 - 既存の `.widgetdsl` を修正する
-- サポート済みウィジェット向けにアニメーショントラックを生成または編集する
+- サポート済みウィジェット向けにアニメーショントラックを生成または修正する
 - インポート前に、ウィジェット、プロパティ、アニメーショントラックがサポートされているか確認する
-- DSL ファイルを一括で検証し、Widget Blueprint にインポートする
+- DSL を一括で検証し、Widget Blueprint としてインポートする
 
 適していない用途:
 
-- Event Graph の生成
-- ランタイムバインディングやデリゲート
-- 現在のサポート範囲外にある任意のカスタムウィジェット
+- Event Graph ロジック生成
+- ランタイム Binding または Delegate
+- サポート範囲外にある任意のカスタムウィジェット
 
 ## AI Agent はこの skill をどう使うべきか
-
-`Claude Code`、`Codex`、`Gemini CLI` のどれを使う場合でも、基本要件は同じです。
-
-- Agent がプロジェクトリポジトリにアクセスできること
-- Agent がローカルスクリプトや commandlet を実行できること。ただし、コマンド実行時に許可を求める場合があります
 
 推奨ワークフロー:
 
@@ -117,6 +115,7 @@ GitHub から ZIP ファイルを直接ダウンロードし、展開したあ�
 4. Agent にウィジェットアニメーションの生成または修正を依頼する
 5. Agent に先に validate / preview を実行させる
 6. Agent に DSL をインポートさせ、Widget Blueprint を生成させる
+
 
 私の経験では、GPT-5.4+ モデルは他のモデルよりも優れた UI 生成結果を出しやすいです。他のモデルで期待する結果が得られない場合は、GPT-5.4+ を試してください。
 
@@ -137,7 +136,7 @@ $ue-widget-creator Create a full-screen inventory widget with a 4x7 item slot gr
 - DSL ファイル: `.ue_dsl/WidgetDSL/.../WBP_*.widgetdsl`
 - アニメーション付き DSL ファイル: 同じく `.ue_dsl/WidgetDSL/.../WBP_*.widgetdsl` に保存されます
 - プレビュー画像: `Saved/WidgetDSLPreview/.../*.png`
-- インポート済み Blueprint: プロジェクト内の `/Game/.../WBP_*`
+- インポート済み Blueprint: プロジェクトの `/Game/.../WBP_*`
 
 ## エディタパネルガイド
 
@@ -149,20 +148,20 @@ $ue-widget-creator Create a full-screen inventory widget with a 4x7 item slot gr
 
 ![Widget Semantic Bridge パネル](../assets/widget_panel.jpg)
 
-パネルは主に 3 つの部分に分かれています。
+このパネルは主に 4 つの部分に分かれています。
 
 ### 1. Batch Export / Batch Import
 
 上部の 2 つのボタンは、プロジェクト全体を対象にした一括操作用です。
 
 - `Export All WBPs`: `/Game` 配下の Widget Blueprint を `<Project>/.ue_dsl/WidgetDSL` に一括エクスポートし、元の `/Game` 以下のサブフォルダ構成を保持します
-- `Import New/Changed DSLs`: `<Project>/.ue_dsl/WidgetDSL` から DSL ファイルを一括インポートし、新規ファイル、または現在の Blueprint エクスポートより新しく内容が異なる DSL ファイルだけを処理します
+- `Import New/Changed DSLs`: `<Project>/.ue_dsl/WidgetDSL` から DSL を一括インポートし、「新規ファイル」または「現在の Blueprint より新しく、内容に変更がある」DSL だけを処理します
 
-これは、チームワークフロー、一括同期、または AI がすでに複数の `.widgetdsl` ファイルを生成している場合に便利です。
+これは、チーム協業、一括同期、または AI がすでに複数の `.widgetdsl` ファイルを生成している場合に便利です。
 
 ### 2. 単一ファイルインポート: `Import DSL Into Widget Blueprint`
 
-1 つの `.widgetdsl` を Unreal の Widget Blueprint にインポートします。
+1 つの `.widgetdsl` を Unreal の Widget Blueprint としてインポートします。
 
 - `DSL File` で対象ファイルを選択します。先に `Validate` をクリックすることを推奨します
 - `Target WBP` にはインポート先が自動的に表示されます

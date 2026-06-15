@@ -46,7 +46,7 @@ Unreal のランタイムコードではなく、単体のプラグインでも�
 
 ### 1. プラグインをインストール
 
-プラグインの場所: `MaterialSemanticBridge`（Fab に掲載後、ここにプラグインページのリンクを追加）
+プラグインの場所: [MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 プラグインが Fab から提供される場合、通常は `Install to Engine` で Unreal Engine ディレクトリにインストールします。
 

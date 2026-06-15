@@ -46,7 +46,7 @@ Typical direct benefits include:
 
 ### 1. Install the Plugin
 
-Plugin address: `MaterialSemanticBridge` (add the plugin page link here after it is listed on Fab)
+Plugin address: [MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 If the plugin comes from Fab, it is usually installed into the Unreal Engine directory with `Install to Engine`.
 

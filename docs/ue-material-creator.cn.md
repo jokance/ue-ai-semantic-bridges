@@ -46,7 +46,7 @@
 
 ### 1. 安装插件
 
-插件地址：`MaterialSemanticBridge`（Fab 上架后在这里补充插件页面链接）
+插件地址：[MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 如果插件来自 Fab，通常是通过 `Install to Engine` 安装到 Unreal 引擎目录。
 

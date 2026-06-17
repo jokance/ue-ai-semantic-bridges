@@ -4,6 +4,8 @@
 
 本文档介绍如何配合 `MaterialSemanticBridge` 插件使用 `ue-material-creator` skill，让 AI Agent 生成、校验、规范化、预览、修复、导入和导出 Unreal 材质 DSL。
 
+![](../assets/material_cover.png)
+
 ## 这是什么
 
 `ue-material-creator` 是一个给 AI Agent 使用的工作流 skill。
@@ -46,7 +48,7 @@
 
 ### 1. 安装插件
 
-插件地址：`MaterialSemanticBridge`（Fab 上架后在这里补充插件页面链接）
+插件地址：[MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 如果插件来自 Fab，通常是通过 `Install to Engine` 安装到 Unreal 引擎目录。
 

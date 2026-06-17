@@ -4,6 +4,8 @@
 
 이 문서는 `ue-material-creator` skill과 `MaterialSemanticBridge` 플러그인을 함께 사용해 AI Agent가 Unreal 머티리얼 DSL을 생성, 검증, 정규화, 미리보기, 수정, 가져오기, 내보내기하는 방법을 설명합니다.
 
+![](../assets/material_cover.png)
+
 ## 개요
 
 `ue-material-creator`는 AI Agent용 워크플로 skill입니다.
@@ -46,7 +48,7 @@ Unreal 런타임 코드도 아니고 독립 플러그인도 아닙니다. 목적
 
 ### 1. 플러그인 설치
 
-플러그인 주소: `MaterialSemanticBridge`(Fab에 등록된 뒤 여기에 플러그인 페이지 링크 추가)
+플러그인 주소: [MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 플러그인이 Fab에서 제공되는 경우 보통 `Install to Engine`으로 Unreal Engine 디렉터리에 설치합니다.
 

@@ -4,6 +4,8 @@ English | [中文](ue-material-creator.cn.md) | [日本語](ue-material-creator.
 
 This document explains how to use the `ue-material-creator` skill together with the `MaterialSemanticBridge` plugin so an AI Agent can generate, validate, normalize, preview, repair, import, and export Unreal material DSL.
 
+![](../assets/material_cover.png)
+
 ## What It Is
 
 `ue-material-creator` is a workflow skill for AI Agents.
@@ -46,7 +48,7 @@ Typical direct benefits include:
 
 ### 1. Install the Plugin
 
-Plugin address: `MaterialSemanticBridge` (add the plugin page link here after it is listed on Fab)
+Plugin address: [MaterialSemanticBridge](https://www.fab.com/listings/cb2fcfbe-a4db-4dee-a9cf-8bbe62823418)
 
 If the plugin comes from Fab, it is usually installed into the Unreal Engine directory with `Install to Engine`.
 

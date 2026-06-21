@@ -35,7 +35,10 @@ Supported widget classes:
 - `WindowTitleBarArea`
 - `ExpandableArea`
 - `NamedSlot`
+- `NativeWidgetHost`
+  Common widget keys are supported. Hosted Slate content is not serialized.
 - `InputKeySelector`
+- `Viewport`
 - `TextBlock`
 - `RichTextBlock`
 - `Image`
@@ -96,11 +99,43 @@ Common static keys on every supported widget:
 - `visibility`
 - `is_enabled`
 - `tool_tip_text`
+- `tool_tip_widget`
 - `clipping`
+- `pixel_snapping`
 - `flow_direction_preference`
+- `override_cursor`
+- `cursor`
+- `is_volatile`
+- `override_accessible_defaults`
+- `can_children_be_accessible`
+- `accessible_behavior`
+- `accessible_summary_behavior`
+- `accessible_text`
+- `accessible_summary_text`
+- `navigation_routing_policy`
+- `navigation_up_rule`
+- `navigation_up_widget`
+- `navigation_down_rule`
+- `navigation_down_widget`
+- `navigation_left_rule`
+- `navigation_left_widget`
+- `navigation_right_rule`
+- `navigation_right_widget`
+- `navigation_next_rule`
+- `navigation_next_widget`
+- `navigation_previous_rule`
+- `navigation_previous_widget`
 - `render_opacity`
 - `render_translation`
 - `render_scale`
+
+Common enum values:
+
+- `pixel_snapping`: `Inherit`, `Disabled`, `SnapToPixel`
+- `cursor`: `None`, `Default`, `TextEditBeam`, `ResizeLeftRight`, `ResizeUpDown`, `ResizeSouthEast`, `ResizeSouthWest`, `CardinalCross`, `Crosshairs`, `Hand`, `GrabHand`, `GrabHandClosed`, `SlashedCircle`, `EyeDropper`, `Custom`
+- `accessible_behavior`, `accessible_summary_behavior`: `NotAccessible`, `Auto`, `Summary`, `Custom`, `ToolTip`
+- `navigation_*_rule`: `Escape`, `Explicit`, `Wrap`, `Stop`, `Custom`, `CustomBoundary`, `Invalid`; `Custom` and `CustomBoundary` preserve the static rule but do not serialize delegate function bodies
+- `navigation_routing_policy`: `AcceptFocus`, `RouteToTopMostChild`, `RouteToBottomMostChild`, `RouteToLeftMostChild`, `RouteToRightMostChild`, `RouteToTopLeftChild`, `RouteToTopRightChild`, `RouteToBottomLeftChild`, `RouteToBottomRightChild`
 
 Structural child keys:
 
@@ -117,9 +152,9 @@ Structural child keys:
 
 Text-valued keys are normally authored as plain strings, with optional localization sidecars:
 
-- `text`, `hint_text`, `tool_tip_text`
-- `text.namespace`, `hint_text.namespace`, `tool_tip_text.namespace`
-- `text.key`, `hint_text.key`, `tool_tip_text.key`
+- `text`, `hint_text`, `tool_tip_text`, `accessible_text`, `accessible_summary_text`
+- `text.namespace`, `hint_text.namespace`, `tool_tip_text.namespace`, `accessible_text.namespace`, `accessible_summary_text.namespace`
+- `text.key`, `hint_text.key`, `tool_tip_text.key`, `accessible_text.key`, `accessible_summary_text.key`
 
 Recommended generation format:
 
@@ -165,6 +200,7 @@ Widgets with no widget-specific static keys beyond the common keys:
 - `Overlay`
 - `VerticalBox`
 - `HorizontalBox`
+- `NativeWidgetHost`
 
 Exact widget-specific static keys:
 
@@ -181,6 +217,19 @@ Exact widget-specific static keys:
   - `outline_material`
   - `simple_text_mode`
   - `strike_brush_tint`
+  - `strike_brush_image_size`
+  - `strike_brush_draw_as`
+  - `strike_brush_tiling`
+  - `strike_brush_mirroring`
+  - `strike_brush_image_type`
+  - `strike_brush_margin`
+  - `strike_brush_outline_settings.corner_radii`
+  - `strike_brush_outline_settings.color`
+  - `strike_brush_outline_settings.width`
+  - `strike_brush_outline_settings.rounding_type`
+  - `strike_brush_outline_settings.use_brush_transparency`
+  - `strike_brush_resource_name`
+  - `strike_brush_uv_region`
   - `strike_brush_material`
   - `strike_brush_resource`
   - `min_desired_width`
@@ -211,8 +260,40 @@ Exact widget-specific static keys:
   - `outline_color`
   - `outline_material`
   - `strike_brush_tint`
+  - `strike_brush_image_size`
+  - `strike_brush_draw_as`
+  - `strike_brush_tiling`
+  - `strike_brush_mirroring`
+  - `strike_brush_image_type`
+  - `strike_brush_margin`
+  - `strike_brush_outline_settings.corner_radii`
+  - `strike_brush_outline_settings.color`
+  - `strike_brush_outline_settings.width`
+  - `strike_brush_outline_settings.rounding_type`
+  - `strike_brush_outline_settings.use_brush_transparency`
+  - `strike_brush_resource_name`
+  - `strike_brush_uv_region`
   - `strike_brush_material`
   - `strike_brush_resource`
+  - full text-style brush detail keys for each prefix `highlight_shape`, `underline_brush`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+    - `<prefix>_material`
+    - `<prefix>_resource`
   - `min_desired_width`
   - `justification`
   - `wrapping_policy`
@@ -229,6 +310,8 @@ Exact widget-specific static keys:
   - `overflow_policy`
   - `shadow_offset`
   - `shadow_color`
+  - `selected_background_color`
+  - `highlight_color`
   - `text_style_set`
   - `decorator_classes`
 - `EditableText`
@@ -254,6 +337,16 @@ Exact widget-specific static keys:
   - `virtual_keyboard_trigger`
   - `virtual_keyboard_dismiss_action`
   - `foreground_color`
+  - `padding`
+  - `background_color`
+  - `focused_foreground_color`
+  - `read_only_foreground_color`
+  - `text_shadow_offset`
+  - `text_shadow_color`
+  - `text_selected_background_color`
+  - `text_highlight_color`
+  - `text_transform_policy`
+  - `text_overflow_policy`
   - `font_size`
   - `font_object`
   - `typeface_font_name`
@@ -262,6 +355,25 @@ Exact widget-specific static keys:
   - `outline_size`
   - `outline_color`
   - `outline_material`
+  - full editable-text brush detail keys for each prefix `selected_background`, `composing_background`, `caret`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `EditableTextBox`
   - `text`
   - `hint_text`
@@ -293,6 +405,23 @@ Exact widget-specific static keys:
   - `outline_size`
   - `outline_color`
   - `outline_material`
+  - text-style brush detail keys for each prefix `text_highlight_shape`, `text_strike_brush`, `text_underline_brush`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
   - `normal_tint`
   - `hovered_tint`
   - `focused_tint`
@@ -301,6 +430,22 @@ Exact widget-specific static keys:
   - `hovered_resource`
   - `focused_resource`
   - `read_only_resource`
+  - background brush detail keys for each prefix `normal`, `hovered`, `focused`, `read_only`:
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `MultiLineEditableTextBox`
   - `text`
   - `hint_text`
@@ -319,10 +464,37 @@ Exact widget-specific static keys:
   - `foreground_color`
   - `focused_foreground_color`
   - `read_only_foreground_color`
+  - `padding`
+  - `background_color`
+  - `text_shadow_offset`
+  - `text_shadow_color`
+  - `text_selected_background_color`
+  - `text_highlight_color`
+  - `text_transform_policy`
+  - `text_overflow_policy`
   - `allow_context_menu`
   - `virtual_keyboard_options.enable_autocorrect`
   - `virtual_keyboard_dismiss_action`
   - `scroll_bar_thickness`
+  - `horizontal_scroll_bar_padding`
+  - `vertical_scroll_bar_padding`
+  - full scrollbar brush detail keys for each prefix `scrollbar_horizontal_background`, `scrollbar_vertical_background`, `scrollbar_vertical_top_slot`, `scrollbar_horizontal_top_slot`, `scrollbar_vertical_bottom_slot`, `scrollbar_horizontal_bottom_slot`, `scrollbar_normal_thumb`, `scrollbar_hovered_thumb`, `scrollbar_dragged_thumb`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
   - `font_size`
   - `font_object`
   - `typeface_font_name`
@@ -331,6 +503,23 @@ Exact widget-specific static keys:
   - `outline_size`
   - `outline_color`
   - `outline_material`
+  - text-style brush detail keys for each prefix `text_highlight_shape`, `text_strike_brush`, `text_underline_brush`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
   - `normal_tint`
   - `hovered_tint`
   - `focused_tint`
@@ -339,6 +528,22 @@ Exact widget-specific static keys:
   - `hovered_resource`
   - `focused_resource`
   - `read_only_resource`
+  - background brush detail keys for each prefix `normal`, `hovered`, `focused`, `read_only`:
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `MultiLineEditableText`
   - `text`
   - `hint_text`
@@ -361,6 +566,12 @@ Exact widget-specific static keys:
   - `virtual_keyboard_options.enable_autocorrect`
   - `virtual_keyboard_dismiss_action`
   - `foreground_color`
+  - `shadow_offset`
+  - `shadow_color`
+  - `selected_background_color`
+  - `highlight_color`
+  - `transform_policy`
+  - `overflow_policy`
   - `font_size`
   - `font_object`
   - `typeface_font_name`
@@ -369,6 +580,23 @@ Exact widget-specific static keys:
   - `outline_size`
   - `outline_color`
   - `outline_material`
+  - full text-style brush detail keys for each prefix `highlight_shape`, `strike_brush`, `underline_brush`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `Image`
   - `color`
   - `brush_tint`
@@ -379,6 +607,8 @@ Exact widget-specific static keys:
   - `mirroring`
   - `image_type`
   - `margin`
+  - `brush_resource_name`
+  - `brush_uv_region`
   - `outline_settings.corner_radii`
   - `outline_settings.color`
   - `outline_settings.width`
@@ -448,6 +678,9 @@ Exact widget-specific static keys:
   - `disabled_foreground`
   - `normal_padding`
   - `pressed_padding`
+  - `pressed_sound`
+  - `clicked_sound`
+  - `hovered_sound`
   - `normal_material`
   - `hovered_material`
   - `pressed_material`
@@ -456,6 +689,14 @@ Exact widget-specific static keys:
   - `hovered_resource`
   - `pressed_resource`
   - `disabled_resource`
+  - `normal_resource_name`
+  - `hovered_resource_name`
+  - `pressed_resource_name`
+  - `disabled_resource_name`
+  - `normal_uv_region`
+  - `hovered_uv_region`
+  - `pressed_uv_region`
+  - `disabled_uv_region`
 - `CheckBox`
   - `checked_state`
   - `check_box_type`
@@ -501,6 +742,102 @@ Exact widget-specific static keys:
   - `background_margin`
   - `background_hovered_margin`
   - `background_pressed_margin`
+  - `unchecked_tiling`
+  - `unchecked_mirroring`
+  - `unchecked_image_type`
+  - `unchecked_outline_settings.corner_radii`
+  - `unchecked_outline_settings.color`
+  - `unchecked_outline_settings.width`
+  - `unchecked_outline_settings.rounding_type`
+  - `unchecked_outline_settings.use_brush_transparency`
+  - `unchecked_hovered_tiling`
+  - `unchecked_hovered_mirroring`
+  - `unchecked_hovered_image_type`
+  - `unchecked_hovered_outline_settings.corner_radii`
+  - `unchecked_hovered_outline_settings.color`
+  - `unchecked_hovered_outline_settings.width`
+  - `unchecked_hovered_outline_settings.rounding_type`
+  - `unchecked_hovered_outline_settings.use_brush_transparency`
+  - `unchecked_pressed_tiling`
+  - `unchecked_pressed_mirroring`
+  - `unchecked_pressed_image_type`
+  - `unchecked_pressed_outline_settings.corner_radii`
+  - `unchecked_pressed_outline_settings.color`
+  - `unchecked_pressed_outline_settings.width`
+  - `unchecked_pressed_outline_settings.rounding_type`
+  - `unchecked_pressed_outline_settings.use_brush_transparency`
+  - `checked_tiling`
+  - `checked_mirroring`
+  - `checked_image_type`
+  - `checked_outline_settings.corner_radii`
+  - `checked_outline_settings.color`
+  - `checked_outline_settings.width`
+  - `checked_outline_settings.rounding_type`
+  - `checked_outline_settings.use_brush_transparency`
+  - `checked_hovered_tiling`
+  - `checked_hovered_mirroring`
+  - `checked_hovered_image_type`
+  - `checked_hovered_outline_settings.corner_radii`
+  - `checked_hovered_outline_settings.color`
+  - `checked_hovered_outline_settings.width`
+  - `checked_hovered_outline_settings.rounding_type`
+  - `checked_hovered_outline_settings.use_brush_transparency`
+  - `checked_pressed_tiling`
+  - `checked_pressed_mirroring`
+  - `checked_pressed_image_type`
+  - `checked_pressed_outline_settings.corner_radii`
+  - `checked_pressed_outline_settings.color`
+  - `checked_pressed_outline_settings.width`
+  - `checked_pressed_outline_settings.rounding_type`
+  - `checked_pressed_outline_settings.use_brush_transparency`
+  - `undetermined_tiling`
+  - `undetermined_mirroring`
+  - `undetermined_image_type`
+  - `undetermined_outline_settings.corner_radii`
+  - `undetermined_outline_settings.color`
+  - `undetermined_outline_settings.width`
+  - `undetermined_outline_settings.rounding_type`
+  - `undetermined_outline_settings.use_brush_transparency`
+  - `undetermined_hovered_tiling`
+  - `undetermined_hovered_mirroring`
+  - `undetermined_hovered_image_type`
+  - `undetermined_hovered_outline_settings.corner_radii`
+  - `undetermined_hovered_outline_settings.color`
+  - `undetermined_hovered_outline_settings.width`
+  - `undetermined_hovered_outline_settings.rounding_type`
+  - `undetermined_hovered_outline_settings.use_brush_transparency`
+  - `undetermined_pressed_tiling`
+  - `undetermined_pressed_mirroring`
+  - `undetermined_pressed_image_type`
+  - `undetermined_pressed_outline_settings.corner_radii`
+  - `undetermined_pressed_outline_settings.color`
+  - `undetermined_pressed_outline_settings.width`
+  - `undetermined_pressed_outline_settings.rounding_type`
+  - `undetermined_pressed_outline_settings.use_brush_transparency`
+  - `background_tiling`
+  - `background_mirroring`
+  - `background_image_type`
+  - `background_outline_settings.corner_radii`
+  - `background_outline_settings.color`
+  - `background_outline_settings.width`
+  - `background_outline_settings.rounding_type`
+  - `background_outline_settings.use_brush_transparency`
+  - `background_hovered_tiling`
+  - `background_hovered_mirroring`
+  - `background_hovered_image_type`
+  - `background_hovered_outline_settings.corner_radii`
+  - `background_hovered_outline_settings.color`
+  - `background_hovered_outline_settings.width`
+  - `background_hovered_outline_settings.rounding_type`
+  - `background_hovered_outline_settings.use_brush_transparency`
+  - `background_pressed_tiling`
+  - `background_pressed_mirroring`
+  - `background_pressed_image_type`
+  - `background_pressed_outline_settings.corner_radii`
+  - `background_pressed_outline_settings.color`
+  - `background_pressed_outline_settings.width`
+  - `background_pressed_outline_settings.rounding_type`
+  - `background_pressed_outline_settings.use_brush_transparency`
   - `foreground_color`
   - `hovered_foreground`
   - `pressed_foreground`
@@ -509,6 +846,9 @@ Exact widget-specific static keys:
   - `checked_pressed_foreground`
   - `undetermined_foreground`
   - `border_background_color`
+  - `checked_sound`
+  - `unchecked_sound`
+  - `hovered_sound`
   - `unchecked_tint`
   - `unchecked_hovered_tint`
   - `unchecked_pressed_tint`
@@ -545,6 +885,30 @@ Exact widget-specific static keys:
   - `background_resource`
   - `background_hovered_resource`
   - `background_pressed_resource`
+  - `unchecked_resource_name`
+  - `unchecked_hovered_resource_name`
+  - `unchecked_pressed_resource_name`
+  - `checked_resource_name`
+  - `checked_hovered_resource_name`
+  - `checked_pressed_resource_name`
+  - `undetermined_resource_name`
+  - `undetermined_hovered_resource_name`
+  - `undetermined_pressed_resource_name`
+  - `background_resource_name`
+  - `background_hovered_resource_name`
+  - `background_pressed_resource_name`
+  - `unchecked_uv_region`
+  - `unchecked_hovered_uv_region`
+  - `unchecked_pressed_uv_region`
+  - `checked_uv_region`
+  - `checked_hovered_uv_region`
+  - `checked_pressed_uv_region`
+  - `undetermined_uv_region`
+  - `undetermined_hovered_uv_region`
+  - `undetermined_pressed_uv_region`
+  - `background_uv_region`
+  - `background_hovered_uv_region`
+  - `background_pressed_uv_region`
 - `ComboBoxKey`
   - `options`
   - `selected_option`
@@ -554,9 +918,100 @@ Exact widget-specific static keys:
   - `enable_gamepad_navigation_mode`
   - `foreground_color`
   - `is_focusable`
+  - `menu_row_padding`
+  - `combo_button_shadow_offset`
+  - `combo_button_shadow_color`
+  - `combo_button_menu_border_padding`
+  - `combo_button_content_padding`
+  - `combo_button_down_arrow_padding`
+  - `combo_button_down_arrow_align`
+  - `combo_button_normal_foreground`
+  - `combo_button_hovered_foreground`
+  - `combo_button_pressed_foreground`
+  - `combo_button_disabled_foreground`
+  - `combo_button_normal_padding`
+  - `combo_button_pressed_padding`
+  - `pressed_sound`
+  - `selection_change_sound`
+  - `combo_button_pressed_sound`
+  - `combo_button_clicked_sound`
+  - `combo_button_hovered_sound`
+  - `item_use_parent_row_brush`
+  - `item_text_color`
+  - `item_selected_text_color`
+  - `scrollbar_thickness`
+  - full combo-box style brush detail keys for each prefix `combo_button_normal`, `combo_button_hovered`, `combo_button_pressed`, `combo_button_disabled`, `down_arrow`, `menu_border`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full combo-box item brush detail keys for each prefix `item_selector_focused`, `item_active_hovered`, `item_active`, `item_inactive_hovered`, `item_inactive`, `item_parent_row_background`, `item_parent_row_background_hovered`, `item_even_row_background_hovered`, `item_even_row_background`, `item_odd_row_background_hovered`, `item_odd_row_background`, `item_drop_indicator_above`, `item_drop_indicator_onto`, `item_drop_indicator_below`, `item_active_highlighted`, `item_inactive_highlighted`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full scrollbar brush detail keys for each prefix `scrollbar_horizontal_background`, `scrollbar_vertical_background`, `scrollbar_vertical_top_slot`, `scrollbar_horizontal_top_slot`, `scrollbar_vertical_bottom_slot`, `scrollbar_horizontal_bottom_slot`, `scrollbar_normal_thumb`, `scrollbar_hovered_thumb`, `scrollbar_dragged_thumb`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `ComboBox`
   - `items`
   - `is_focusable`
+  - `scrollbar_thickness`
+  - full scrollbar brush detail keys for each prefix `scrollbar_horizontal_background`, `scrollbar_vertical_background`, `scrollbar_vertical_top_slot`, `scrollbar_horizontal_top_slot`, `scrollbar_vertical_bottom_slot`, `scrollbar_horizontal_bottom_slot`, `scrollbar_normal_thumb`, `scrollbar_hovered_thumb`, `scrollbar_dragged_thumb`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `ComboBoxString`
   - `options`
   - `selected_option`
@@ -574,6 +1029,79 @@ Exact widget-specific static keys:
   - `outline_material`
   - `foreground_color`
   - `is_focusable`
+  - `menu_row_padding`
+  - `combo_button_shadow_offset`
+  - `combo_button_shadow_color`
+  - `combo_button_menu_border_padding`
+  - `combo_button_content_padding`
+  - `combo_button_down_arrow_padding`
+  - `combo_button_down_arrow_align`
+  - `combo_button_normal_foreground`
+  - `combo_button_hovered_foreground`
+  - `combo_button_pressed_foreground`
+  - `combo_button_disabled_foreground`
+  - `combo_button_normal_padding`
+  - `combo_button_pressed_padding`
+  - `pressed_sound`
+  - `selection_change_sound`
+  - `combo_button_pressed_sound`
+  - `combo_button_clicked_sound`
+  - `combo_button_hovered_sound`
+  - `item_use_parent_row_brush`
+  - `item_text_color`
+  - `item_selected_text_color`
+  - `scrollbar_thickness`
+  - full combo-box style brush detail keys for each prefix `combo_button_normal`, `combo_button_hovered`, `combo_button_pressed`, `combo_button_disabled`, `down_arrow`, `menu_border`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full combo-box item brush detail keys for each prefix `item_selector_focused`, `item_active_hovered`, `item_active`, `item_inactive_hovered`, `item_inactive`, `item_parent_row_background`, `item_parent_row_background_hovered`, `item_even_row_background_hovered`, `item_even_row_background`, `item_odd_row_background_hovered`, `item_odd_row_background`, `item_drop_indicator_above`, `item_drop_indicator_onto`, `item_drop_indicator_below`, `item_active_highlighted`, `item_inactive_highlighted`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full scrollbar brush detail keys for each prefix `scrollbar_horizontal_background`, `scrollbar_vertical_background`, `scrollbar_vertical_top_slot`, `scrollbar_horizontal_top_slot`, `scrollbar_vertical_bottom_slot`, `scrollbar_horizontal_bottom_slot`, `scrollbar_normal_thumb`, `scrollbar_hovered_thumb`, `scrollbar_dragged_thumb`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `DynamicEntryBox`
   - `entry_spacing`
   - `spacing_pattern`
@@ -623,12 +1151,40 @@ Exact widget-specific static keys:
   - `border_outline_settings.use_brush_transparency`
   - `border_material`
   - `border_resource`
+  - `border_resource_name`
+  - `border_uv_region`
   - `collapsed_tint`
   - `expanded_tint`
+  - `collapsed_image_size`
+  - `expanded_image_size`
+  - `collapsed_draw_as`
+  - `expanded_draw_as`
+  - `collapsed_tiling`
+  - `expanded_tiling`
+  - `collapsed_mirroring`
+  - `expanded_mirroring`
+  - `collapsed_image_type`
+  - `expanded_image_type`
+  - `collapsed_margin`
+  - `expanded_margin`
+  - `collapsed_outline_settings.corner_radii`
+  - `expanded_outline_settings.corner_radii`
+  - `collapsed_outline_settings.color`
+  - `expanded_outline_settings.color`
+  - `collapsed_outline_settings.width`
+  - `expanded_outline_settings.width`
+  - `collapsed_outline_settings.rounding_type`
+  - `expanded_outline_settings.rounding_type`
+  - `collapsed_outline_settings.use_brush_transparency`
+  - `expanded_outline_settings.use_brush_transparency`
   - `collapsed_material`
   - `expanded_material`
   - `collapsed_resource`
   - `expanded_resource`
+  - `collapsed_resource_name`
+  - `expanded_resource_name`
+  - `collapsed_uv_region`
+  - `expanded_uv_region`
   - child widgets may use `parent_slot "Header"` or `parent_slot "Body"` to target the named slots
 - `NamedSlot`
   - no extra static keys
@@ -658,6 +1214,55 @@ Exact widget-specific static keys:
   - `outline_color`
   - `outline_material`
   - `foreground_color`
+  - `text_shadow_offset`
+  - `text_shadow_color`
+  - `text_selected_background_color`
+  - `text_highlight_color`
+  - `text_transform_policy`
+  - `text_overflow_policy`
+  - `normal_foreground`
+  - `hovered_foreground`
+  - `pressed_foreground`
+  - `disabled_foreground`
+  - `normal_padding`
+  - `pressed_padding`
+  - `pressed_sound`
+  - `clicked_sound`
+  - `hovered_sound`
+  - full button brush detail keys for each prefix `normal`, `hovered`, `pressed`, `disabled`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full text-style brush detail keys for each prefix `highlight_shape`, `strike_brush`, `underline_brush`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
 - `ScrollBar`
   - `orientation`
   - `thickness`
@@ -817,6 +1422,12 @@ Exact widget-specific static keys:
   - `background_resource`
   - `fill_resource`
   - `marquee_resource`
+  - `background_resource_name`
+  - `fill_resource_name`
+  - `marquee_resource_name`
+  - `background_uv_region`
+  - `fill_uv_region`
+  - `marquee_uv_region`
 - `Slider`
   - `value`
   - `min_value`
@@ -916,6 +1527,18 @@ Exact widget-specific static keys:
   - `normal_thumb_resource`
   - `hovered_thumb_resource`
   - `disabled_thumb_resource`
+  - `normal_bar_resource_name`
+  - `hovered_bar_resource_name`
+  - `disabled_bar_resource_name`
+  - `normal_thumb_resource_name`
+  - `hovered_thumb_resource_name`
+  - `disabled_thumb_resource_name`
+  - `normal_bar_uv_region`
+  - `hovered_bar_uv_region`
+  - `disabled_bar_uv_region`
+  - `normal_thumb_uv_region`
+  - `hovered_thumb_uv_region`
+  - `disabled_thumb_uv_region`
 - `SpinBox`
   - `value`
   - `min_value`
@@ -985,6 +1608,13 @@ Exact widget-specific static keys:
   - `hovered_fill_tint`
   - `inactive_fill_tint`
   - `arrows_tint`
+  - `background_material`
+  - `active_background_material`
+  - `hovered_background_material`
+  - `active_fill_material`
+  - `hovered_fill_material`
+  - `inactive_fill_material`
+  - `arrows_material`
   - `background_resource`
   - `active_background_resource`
   - `hovered_background_resource`
@@ -992,6 +1622,55 @@ Exact widget-specific static keys:
   - `hovered_fill_resource`
   - `inactive_fill_resource`
   - `arrows_resource`
+  - `background_resource_name`
+  - `active_background_resource_name`
+  - `hovered_background_resource_name`
+  - `active_fill_resource_name`
+  - `hovered_fill_resource_name`
+  - `inactive_fill_resource_name`
+  - `arrows_resource_name`
+  - `background_uv_region`
+  - `active_background_uv_region`
+  - `hovered_background_uv_region`
+  - `active_fill_uv_region`
+  - `hovered_fill_uv_region`
+  - `inactive_fill_uv_region`
+  - `arrows_uv_region`
+  - `background_outline_settings.corner_radii`
+  - `background_outline_settings.color`
+  - `background_outline_settings.width`
+  - `background_outline_settings.rounding_type`
+  - `background_outline_settings.use_brush_transparency`
+  - `active_background_outline_settings.corner_radii`
+  - `active_background_outline_settings.color`
+  - `active_background_outline_settings.width`
+  - `active_background_outline_settings.rounding_type`
+  - `active_background_outline_settings.use_brush_transparency`
+  - `hovered_background_outline_settings.corner_radii`
+  - `hovered_background_outline_settings.color`
+  - `hovered_background_outline_settings.width`
+  - `hovered_background_outline_settings.rounding_type`
+  - `hovered_background_outline_settings.use_brush_transparency`
+  - `active_fill_outline_settings.corner_radii`
+  - `active_fill_outline_settings.color`
+  - `active_fill_outline_settings.width`
+  - `active_fill_outline_settings.rounding_type`
+  - `active_fill_outline_settings.use_brush_transparency`
+  - `hovered_fill_outline_settings.corner_radii`
+  - `hovered_fill_outline_settings.color`
+  - `hovered_fill_outline_settings.width`
+  - `hovered_fill_outline_settings.rounding_type`
+  - `hovered_fill_outline_settings.use_brush_transparency`
+  - `inactive_fill_outline_settings.corner_radii`
+  - `inactive_fill_outline_settings.color`
+  - `inactive_fill_outline_settings.width`
+  - `inactive_fill_outline_settings.rounding_type`
+  - `inactive_fill_outline_settings.use_brush_transparency`
+  - `arrows_outline_settings.corner_radii`
+  - `arrows_outline_settings.color`
+  - `arrows_outline_settings.width`
+  - `arrows_outline_settings.rounding_type`
+  - `arrows_outline_settings.use_brush_transparency`
   - `font_size`
   - `font_object`
   - `typeface_font_name`
@@ -1164,6 +1843,7 @@ Exact widget-specific static keys:
   - `horizontal_entry_spacing`
   - `vertical_entry_spacing`
   - `scroll_bar_padding`
+  - `scrollbar_thickness`
   - `wheel_scroll_multiplier`
   - `enable_scroll_animation`
   - `scroll_animation_interpolation_speed`
@@ -1174,21 +1854,57 @@ Exact widget-specific static keys:
   - `gamepad_scrolling_enabled`
   - `enable_right_click_scrolling`
   - `enable_shadow_brush`
-  - `top_shadow_tint`
-  - `bottom_shadow_tint`
-  - `normal_thumb_tint`
-  - `hovered_thumb_tint`
-  - `dragged_thumb_tint`
-  - `top_shadow_material`
-  - `bottom_shadow_material`
-  - `normal_thumb_material`
-  - `hovered_thumb_material`
-  - `dragged_thumb_material`
-  - `top_shadow_resource`
-  - `bottom_shadow_resource`
-  - `normal_thumb_resource`
-  - `hovered_thumb_resource`
-  - `dragged_thumb_resource`
+  - full list style brush detail keys for prefix `background`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full shadow brush detail keys for each prefix `top_shadow`, `bottom_shadow`, `left_shadow`, `right_shadow`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
+  - full scrollbar brush detail keys for each prefix `horizontal_background`, `vertical_background`, `vertical_top_slot`, `horizontal_top_slot`, `vertical_bottom_slot`, `horizontal_bottom_slot`, `normal_thumb`, `hovered_thumb`, `dragged_thumb`:
+    - `<prefix>_tint`
+    - `<prefix>_image_size`
+    - `<prefix>_draw_as`
+    - `<prefix>_tiling`
+    - `<prefix>_mirroring`
+    - `<prefix>_image_type`
+    - `<prefix>_margin`
+    - `<prefix>_outline_settings.corner_radii`
+    - `<prefix>_outline_settings.color`
+    - `<prefix>_outline_settings.width`
+    - `<prefix>_outline_settings.rounding_type`
+    - `<prefix>_outline_settings.use_brush_transparency`
+    - `<prefix>_resource_name`
+    - `<prefix>_uv_region`
+    - `<prefix>_material`
+    - `<prefix>_resource`
   - `enable_fixed_line_offset`
   - `fixed_line_scroll_offset`
   - `allow_dragging`
@@ -1234,6 +1950,20 @@ Exact widget-specific static keys:
   - `blur_radius`
   - `corner_radius`
   - `fallback_brush_tint`
+  - `fallback_brush_image_size`
+  - `fallback_brush_draw_as`
+  - `fallback_brush_tiling`
+  - `fallback_brush_mirroring`
+  - `fallback_brush_image_type`
+  - `fallback_brush_margin`
+  - `fallback_brush_outline_settings.corner_radii`
+  - `fallback_brush_outline_settings.color`
+  - `fallback_brush_outline_settings.width`
+  - `fallback_brush_outline_settings.rounding_type`
+  - `fallback_brush_outline_settings.use_brush_transparency`
+  - `fallback_brush_resource_name`
+  - `fallback_brush_uv_region`
+  - `fallback_brush_material`
   - `fallback_brush_resource`
 - `InvalidationBox`
   - `can_cache`
@@ -1255,14 +1985,50 @@ Exact widget-specific static keys:
   - `animate_horizontally`
   - `animate_vertically`
   - `animate_opacity`
+  - `image_tint`
+  - `image_size`
+  - `image_draw_as`
+  - `image_tiling`
+  - `image_mirroring`
+  - `image_type`
+  - `image_margin`
+  - `image_outline_settings.corner_radii`
+  - `image_outline_settings.color`
+  - `image_outline_settings.width`
+  - `image_outline_settings.rounding_type`
+  - `image_outline_settings.use_brush_transparency`
+  - `image_resource_name`
+  - `image_uv_region`
+  - `image_material`
+  - `image_resource`
 - `CircularThrobber`
   - `number_of_pieces`
   - `period`
+  - `enable_radius`
   - `radius`
+  - `image_tint`
+  - `image_size`
+  - `image_draw_as`
+  - `image_tiling`
+  - `image_mirroring`
+  - `image_type`
+  - `image_margin`
+  - `image_outline_settings.corner_radii`
+  - `image_outline_settings.color`
+  - `image_outline_settings.width`
+  - `image_outline_settings.rounding_type`
+  - `image_outline_settings.use_brush_transparency`
+  - `image_resource_name`
+  - `image_uv_region`
+  - `image_material`
+  - `image_resource`
 - `WidgetSwitcher`
   - `active_widget_index`
 - `Spacer`
   - `size`
+- `Viewport`
+  - `background_color`
+  Runtime scene contents, spawned actors, camera state, and show flags are not serialized.
 - `UserWidget`
   - `widget_class`
 - `CustomWidget`
@@ -1393,14 +2159,34 @@ Slot animation:
 
 - `slot.offsets`
 - `slot.alignment.{x,y}`
+- `slot.anchors.minimum.{x,y}`
+- `slot.anchors.maximum.{x,y}`
+- `slot.zorder`
+- `slot.auto_size`
 - `slot.padding`
 - `slot.horizontal_alignment`
 - `slot.vertical_alignment`
+- `slot.size_rule`
+- `slot.size_value`
+- `slot.row`
+- `slot.column`
+- `slot.row_span`
+- `slot.column_span`
+- `slot.layer`
 - `slot.nudge.{x,y}`
-- `slot.offsets` and `slot.alignment.{x,y}` require `CanvasPanelSlot`
+- `slot.fill_empty_space`
+- `slot.fill_span_when_less_than`
+- `slot.force_new_line`
+- `slot.safe_area_scale`
+- `slot.is_title_safe`
+- `slot.offsets`, `slot.alignment.{x,y}`, `slot.anchors.minimum.{x,y}`, `slot.anchors.maximum.{x,y}`, `slot.zorder`, and `slot.auto_size` require `CanvasPanelSlot`
 - `slot.padding` only works on slot families that expose static `padding`
 - `slot.horizontal_alignment` and `slot.vertical_alignment` only work on slot families that expose those static keys
+- `slot.size_rule` and `slot.size_value` only work on `VerticalBoxSlot`, `HorizontalBoxSlot`, `ScrollBoxSlot`, and `StackBoxSlot`
+- `slot.row` and `slot.column` work on `GridSlot` and `UniformGridSlot`; `slot.row_span`, `slot.column_span`, and `slot.layer` only work on `GridSlot`
 - `slot.nudge.{x,y}` only works on `GridSlot`
+- `slot.fill_empty_space`, `slot.fill_span_when_less_than`, and `slot.force_new_line` only work on `WrapBoxSlot`
+- `slot.safe_area_scale` and `slot.is_title_safe` only work on `SafeZoneSlot`
 
 Exact widget-specific animation tracks:
 
@@ -1612,6 +2398,9 @@ Exact widget-specific animation tracks:
   - `slot_padding`
   - `min_desired_slot_width`
   - `min_desired_slot_height`
+- `GridPanel`
+  - `column_fill.<index>`
+  - `row_fill.<index>`
 - `ListView`
   - `orientation`
   - `selection_mode`
@@ -1695,12 +2484,11 @@ Treat these as unsupported unless implementation and tests are updated:
 - any widget, static key, slot key, or animation track not listed above
 - serializing the internal widget tree of a nested `UserWidget`
 - custom class-specific properties beyond common widget keys and slot keys
-- `GridPanel` fill-array animation for `column_fill` and `row_fill`
 - brush resource animation
 - `font_material` animation
 - `outline_material` animation
 - `effect_material` animation
-- generic slot animation beyond `slot.offsets`, `slot.alignment.{x,y}`, `slot.padding`, `slot.horizontal_alignment`, `slot.vertical_alignment`, and `slot.nudge.{x,y}`
+- generic slot animation beyond the slot animation tracks listed above
 - `SpinBox` interaction bool animation for `always_uses_delta_snap` and `enable_slider`
 
 ## Safe Generation Rule

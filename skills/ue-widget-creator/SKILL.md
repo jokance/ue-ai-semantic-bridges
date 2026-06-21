@@ -63,7 +63,13 @@ If a local reference is still not enough to disambiguate an exact DSL key, slot 
 
 - Stay inside the frozen widget scope.
 - Use only supported properties and animation tracks.
-- Prefer the simplest import-safe widget tree that satisfies the request.
+- Prefer the simplest import-safe widget tree that satisfies the request, but keep it structurally maintainable.
+- For full-screen page widgets, design against the UMG Designer `Fill Screen` model: keep `CvsRoot` as the viewport-sized root, anchor first-level background or main-frame children to fill the screen with zero offsets unless the request explicitly needs a fixed custom designer size, and control margins inside those groups.
+- Group widgets by semantic UI regions and functions. Do not flatten most controls directly under `CvsRoot` or one large catch-all panel.
+- Keep grouping proportional. Do not add deep wrapper chains or single-child containers unless they provide layout, sizing, clipping, visual background, slot behavior, or a reusable semantic boundary.
+- Use named containers for major areas and real functional groups such as background, header, content columns, preview, navigation, parameter groups, repeated rows, footer actions, and modal sections before placing leaf controls.
+- Choose container widgets by responsibility. Prefer layout panels (`VerticalBox`, `HorizontalBox`, `Overlay`, `CanvasPanel`, `SizeBox`) for structure; use `Border` only when the container needs a visible brush/background, padding owned by the visual skin, alignment around one child, or a deliberate frame.
+- Do not compensate for full-screen layout problems by changing whole-page `render_scale`, `render_transform.pivot`, or root-level offsets. Fix the anchors, fill behavior, padding, and internal container sizing instead.
 - Do not invent syntax, keys, enum values, or animation paths.
 - Omit defaults whenever possible so the file stays close to canonical export shape.
 - If a requested feature is unsupported, blocked, or excluded, say so explicitly and propose the nearest supported fallback.

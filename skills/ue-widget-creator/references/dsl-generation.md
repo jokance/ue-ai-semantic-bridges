@@ -37,6 +37,7 @@ Turn the analyzed design brief into the smallest import-safe DSL draft that stay
 
 - use indentation-based DSL only
 - root line: `CvsRoot CanvasPanel` for generated page DSL unless an existing file must preserve a different root name
+- full-screen page DSL should follow UMG Designer `Fill Screen`: omit custom `design_size` unless the request explicitly needs one, keep `CvsRoot` as the viewport root, and give first-level background or main-frame children `anchors "0,0,1,1"` with zero offsets when they should fill the screen
 - property line: `key "value"`
 - escape strings with `\\n`, `\\r`, `\\\"`, and `\\\\`
 - do not emit `schema`, `widget`, `end`, YAML, JSON, or speculative syntax
@@ -46,6 +47,12 @@ Turn the analyzed design brief into the smallest import-safe DSL draft that stay
 ## Strategy
 
 - prefer the simplest supported widget tree
+- preserve semantic region containers from `design-analysis`; simple means low-noise, neither flat nor deeply nested
+- for full-screen pages, put viewport-filling behavior on top-level slot anchors and offsets, then handle content margins and panel widths inside grouped containers
+- do not use whole-page `render_scale`, root pivot changes, or root-level fixed offsets to repair a full-screen layout; correct the slot anchors, fill behavior, padding, and internal container sizing
+- avoid placing unrelated controls as siblings under `CvsRoot` or a single catch-all container when a functional grouping container would make the UMG hierarchy clearer
+- collapse redundant one-child wrappers unless they are needed for slot behavior, sizing, visual background, clipping, or a named reusable/semantic boundary
+- do not default to `Border` for every group. Use layout panels for layout-only structure, `Image` for childless decorative/background rectangles, `SizeBox` for sizing constraints, and `Border` only for visible framed/skinned single-child containers that need `brush_tint`, `padding`, or child alignment
 - prefer supported fallback over speculative parity
 - if a requested feature is blocked or excluded, leave it out and state the fallback
 - treat this file as a draft until `dsl-validation` imports it and stabilizes it
